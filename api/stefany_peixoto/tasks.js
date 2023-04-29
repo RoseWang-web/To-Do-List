@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 /** @type{{id: number, name: string, done: boolean}[]} */
-const tasks = [{ id: 1, name: "some name", done: false }];
+const tasks = [];
 
 // Search
 router.get('/', function (req, res) {
