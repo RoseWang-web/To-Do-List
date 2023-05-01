@@ -8,6 +8,7 @@
 !.vscode/*.code-snippets
 *.vsix
 .idea
+.DS_Store
 # Node JS
 node_modules
 
