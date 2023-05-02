@@ -14,8 +14,13 @@ const tasks = [
 // Search
 router.get('/', function (req, res) {
     console.log("Handling request to search tasks");
+    res.send(tasks);
+});
+
+router.get('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    tasks.filter((tasks) => tasks.id === id);
+    const result = tasks.filter((tasks) => tasks.id === id);
     if (result.length === 0) {
         res.status(404).send({ message: "Task not found"});
         return;
