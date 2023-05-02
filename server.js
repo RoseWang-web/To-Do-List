@@ -27,6 +27,9 @@ app.use('/api/daniel/tasks', danielTasksRouter);
 const pedroTasksRouter = require('./api/pedroPerillo/tasks');
 app.use('/api/pedroPerillo/tasks', pedroTasksRouter);
 
+const RoseTasksRouter = require('./api/Rose/tasks');
+app.use('/api/Rose/tasks', RoseTasksRouter);
+
 // Start server
 app.listen(3000, () => {
     console.log('Server Started');
