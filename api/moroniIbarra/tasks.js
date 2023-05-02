@@ -7,8 +7,6 @@ const router = express.Router();
 const tasks = [
     { id: 1, name: "some name 1", done: false },
     { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
 ];
 
 // Search
