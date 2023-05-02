@@ -6,6 +6,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 // Register tasks router
+const brunaDumerTasksRouter = require('./api/brunaDumer/tasks');
+app.use('/api/brunaDumer/tasks', brunaDumerTasksRouter);
+
 const danielCamargoTasksRouter = require('./api/danielcamargo/tasks');
 app.use('/api/danielcamargo/tasks', danielCamargoTasksRouter);
 
