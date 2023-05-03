@@ -32,10 +32,9 @@ const pedroTasksRouter = require('./api/pedroPerillo/tasks');
 app.use('/api/pedroPerillo/tasks', pedroTasksRouter);
 
 const pieroTasksRouter = require('./api/pieroTinoco/tasks');
-app.use('/api/pieroTinoco/tasks', PieroTasksRouter);
-
+app.use('/api/pieroTinoco/tasks', pieroTasksRouter);
 
 // Start server
 app.listen(3000, () => {
     console.log('Server Started');
-});
+});n
