@@ -12,22 +12,17 @@ const tasks = [
 ];
 
 // Search
-router.get('/', function (req, res) {
-    console.log("Handling request to search tasks");
-    // Return all tasks
-    res.send(tasks);
-});
-// /tasks/1
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const result = tasks.filter((task) => task.id === id);
-    if (result.length === 0){
-        res.status(404).send({ message: "Not found"});
+    const filteredTasks = tasks.filter((task) => task.id === id);  
+    if (filteredTasks.length === 0){
+        res.status(404).send({message: "Not found"});
         return;
-    }
+    } 
     // Return all tasks
-    res.send(result[0]);
+
+    res.send(filteredTasks[0]);
 });
 
 module.exports = router;
