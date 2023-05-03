@@ -19,4 +19,18 @@ router.get('/', function (req, res) {
     res.send(tasks);
 });
 
+router.get('/:id', function (req, res) {
+    console.log("find task by ID",req.params.id);
+    const result=tasks.find(function (task) {
+        return task.id==req.params.id;
+    })
+    if (!result) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // Return all tasks
+    res.send(result);
+
+});
+
 module.exports = router;
