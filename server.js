@@ -31,6 +31,9 @@ app.use('/api/daniel/tasks', danielTasksRouter);
 const pedroTasksRouter = require('./api/pedroPerillo/tasks');
 app.use('/api/pedroPerillo/tasks', pedroTasksRouter);
 
+const pieroTasksRouter = require('./api/pieroTinoco/tasks');
+app.use('/api/pieroTinoco/tasks', PieroTasksRouter);
+
 
 // Start server
 app.listen(3000, () => {
