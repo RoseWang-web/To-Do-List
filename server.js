@@ -16,6 +16,9 @@ app.use('/api/danielcamargo/tasks', danielCamargoTasksRouter);
 const moroniTasksRouter = require('./api/moroniIbarra/tasks');
 app.use('/api/moroniIbarra/tasks', moroniTasksRouter);
 
+const moroniTasksRouter = require('./api/andre/tasks');
+app.use('/api/andre/tasks', andreTasksRouter);
+
 const roseTasksRouter = require('./api/Rose/tasks');
 app.use('/api/rose/tasks', roseTasksRouter);
 
