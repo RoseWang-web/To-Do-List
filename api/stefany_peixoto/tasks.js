@@ -20,8 +20,8 @@ router.get('/', function (req, res) {
 
 router.get('/:id', function (req, res) {
     console.log("Handling request to find task: ", req.params.id);
-    const id = parseInt(req.params.id)
-    const result = tasks.filter((task)=> task.id === id);
+    const id = parseInt(req.params.id);
+    const result = tasks.filter((task) => task.id === id);
 
     if (result.length === 0) {
         res.status(404).send({ message: "Not found" });
