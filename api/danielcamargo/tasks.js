@@ -6,9 +6,10 @@ const router = express.Router();
 /** @type{{id: number, name: string, done: boolean}[]} */
 const tasks = [
     { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: true },
+    { id: 2, name: "some name 2", done: false },
     { id: 3, name: "some name 3", done: false },
     { id: 4, name: "some name 4", done: false },
+    { id: 5, name: "some name 5", done: false },
 ];
 
 // GET /tasks
