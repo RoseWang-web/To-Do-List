@@ -4,22 +4,20 @@ const express = require('express');
 const router = express.Router();
 
 /** @type{{id: number, name: string, done: boolean}[]} */
-const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
-    { id: 5, name: "some name 5", done: false },
+const task = [
+    { id: 1, name: "week1", done: false },
+    { id: 2, name: "week2", done: false },
+    { id: 3, name: "week3", done: false },
+    { id: 4, name: "week4", done: false },
 ];
 
-// GET /tasks
+// Search
 router.get('/', function (req, res) {
-    console.log("Handling request to list all tasks");
+    console.log("Handling request to search tasks");
     // Return all tasks
     res.send(tasks);
 });
 
-// GET /tasks/5
 router.get('/:id', function (req, res) {
     console.log("Handling request to find a task by id: ", req.params.id);
     const id = parseInt(req.params.id);
@@ -28,7 +26,6 @@ router.get('/:id', function (req, res) {
         res.status(404).send({ message: "Not found" });
         return;
     }
-
     // Return the task
     res.send(filteredTasks[0]);
 });

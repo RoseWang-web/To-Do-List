@@ -16,6 +16,9 @@ app.use('/api/danielcamargo/tasks', danielCamargoTasksRouter);
 const moroniTasksRouter = require('./api/moroniIbarra/tasks');
 app.use('/api/moroniIbarra/tasks', moroniTasksRouter);
 
+const andreTasksRouter = require('./api/andre/tasks');
+app.use('/api/andre/tasks', andreTasksRouter);
+
 const roseTasksRouter = require('./api/Rose/tasks');
 app.use('/api/rose/tasks', roseTasksRouter);
 
@@ -31,10 +34,16 @@ app.use('/api/daniel/tasks', danielTasksRouter);
 const pedroTasksRouter = require('./api/pedroPerillo/tasks');
 app.use('/api/pedroPerillo/tasks', pedroTasksRouter);
 
-const pieroTasksRouter = require('./api/pieroTinoco/tasks');
-app.use('/api/pieroTinoco/tasks', pieroTinocoTasksRouter);
+const doyoungTasksRouter = require('./api/doyoung/tasks');
+app.use('/api/doyoung/tasks', doyoungTasksRouter);
+
+const pieroTasksRouter = require('./api/piero/tasks');
+app.use('/api/piero/tasks', pieroTasksRouter);
+
+const thiagoTasksRouter = require('./api/thiago/tasks');
+app.use('/api/thiago/tasks', thiagoTasksRouter);
 
 // Start server
 app.listen(3000, () => {
     console.log('Server Started');
-});n
+});
