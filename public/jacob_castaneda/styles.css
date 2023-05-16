@@ -1,0 +1,40 @@
+/* Set the background color of the page */
+body {
+  background-color: #f2f2f2;
+}
+
+/* Style the heading */
+h1 {
+  font-size: 36px;
+  text-align: center;
+  color: #333;
+  margin-top: 50px;
+}
+
+/* Style the paragraphs */
+p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Style the links */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* Style the buttons */
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0069d9;
+}
