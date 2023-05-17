@@ -5,16 +5,64 @@
         <title>Team - Spring 2023</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>To-do app</title>
     </head>
 
     <body>
-        <h1>Team Spring 2023: To-Do App</h1>
-        <h2>Member Applications</h2>
-        <ul>
-            <li><a href="/danielcamargo">Daniel Camargo</a></li>
-            <li><a href="/fernandomesser">Fernando Messer</a></li>
+        <table id="taskTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Done</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        </ul>
+            <tbody id="taskTableBody"> 
+                <tr>
+                    <td>1</td>
+                    <td>Task 1</td>
+                    <td><input type="checkbox"></td>
+                    <td><button>Remove</button></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Task 2</td>
+                    <td><input type="checkbox"></td>
+                    <td><button>Remove</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <script>
+        const tableBody = document.getElementById("taskTableBody")
+        
+        function addRow(task){
+        const row = document.createElement("tr")
+        tableBody.appendChild(row)
+        const idColumn = document.createElement("td")
+        idColumn.innerText = task.id
+        row.appendChild(idColumn)
+        const nameColumn = document.createElement("td")
+        nameColumn.innerText = task.name
+        row.appendChild(nameColumn)
+        }
+        function fetchTasks(){
+            console.log("Fetching Tasks")
+            fetch("/api/fernandoMesser/tasks").then(function(response){
+                console.log(response)
+                response.json().then(function(data){
+                    console.log(data)
+                    for(let i = 0; i < data.length; i++){
+                        const task = data[i]
+                        addRow(task)
+                    }
+                })
+            })
+
+        }
+        fetchTasks()
+        </script>
     </body>
 
 </html>

@@ -11,6 +11,11 @@ const tasks = [
     { id: 4, name: "some name 4", done: false },
 ];
 
+router.get('/', function (req, res) {
+    console.log("Handling request to search tasks");
+    res.send(tasks);
+});
+
 // Search
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
