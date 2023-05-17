@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do App</title>
+</head>
+
+<body>
+    <table id="taskTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Done</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="taskTableBody"> 
+            </tbody>
+        </table>
+ <script>
+ const tableBody = document.getElementById("taskTableBody") 
+
+function addrow(task){
+const row = document.createElement("tr")
+ tableBody.appendChild(row)
+ const idcolumn = document.createElement("td")
+ idcolumn.innerText = task.id
+ row.appendChild(idcolumn)
+ const nameColumn = document.createElement("td")
+ nameColumn.innerText = task.name
+ row.appendChild(nameColumn)
+ const doneColumn = document.createElement("td")
+ doneColumn.innerText = task.done
+ row.appendChild(doneColumn)
+}
+
+
+function fetchTasks (){
+    console.log("fetching Tasks")
+    fetch("/api/moroniIbarra/tasks").then(function(response){
+        console.log(response)
+        response.json().then(function (data){
+            console.log(data)
+        for(let i = 0; i < data.length; i++){
+            const t = data [i]
+            addrow(t)
+        }
+        })
+
+
+
+    })
+}
+
+fetchTasks()
+ </script>
+    
+</body>
+<!--The sky is the limit-->
+</html>

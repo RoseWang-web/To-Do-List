@@ -44,6 +44,6 @@ const thiagoTasksRouter = require('./api/thiago/tasks');
 app.use('/api/thiago/tasks', thiagoTasksRouter);
 
 // Start server
-app.listen(3000, () => {
+app.listen(80, () => {
     console.log('Server Started');
 });
