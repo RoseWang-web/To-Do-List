@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Rose Wang</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>To-Do App</h1>
+    
+    <table border="1" id="taskTable">
+
+<thead> 
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Done</th>
+<th>Actions</th>
+<th>Subject</th>
+</tr>
+</thead>
+
+<tbody id="taskTableBody">
+    <tr>
+        <td>1</td>
+        <td>emmy</td>
+        <td><input type="checkbox"/></td>
+        <td><button click="">remove</button></td>
+    </tr>
+
+    <script>
+       console.log("Hello World");
+        async function fetchAllTasks(){
+            const response = await fetch("/api/rose/tasks");
+            const tasks= await response.json();
+            console.log("Number of tasks found: ", tasks.lenth);
+            return tasks;
+        }
+        function renderRow(tableBodyElement, task){
+            console.log("Task", task);
+            const row = document.createElement("tr");
+            tableBodyElement.append(row);
+            //create the ID column
+            const idCol = document.createElement("td");
+            idCol.append(task.id);
+            row.append(idCol);
+            //create the name column
+            const nameCol = document.createElement("td");
+            nameCol.append(task.name);
+            row.append(nameCol);
+            //create the Done column
+            const doneCol = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.setAttribute("type", "checkbox");
+            if (task.done){
+                checkbox.setAttribute("checked","");
+            }
+            doneCol.append(checkbox);
+            row.append(doneCol);
+             const actionCol = document.createElement("td");
+             const removeButton=document.createElement("button");
+             removeButton.append("remove");
+             actionCol.append(removeButton);
+             removeButton.addEventListener("click", function(){
+                const choice = window.confirm(`Are you sure you want to delete\n: ${task.name}`);
+                if(!choice){
+                    return;
+                }
+             
+                //Go ahead and delete the task.
+                console.log("delete ID",task.id);
+             })
+            row.append(actionCol);
+        }
+        async function renderTable(){
+            const tasks = await fetchAllTasks();
+            const tableBody=document.getElementById("taskTableBody");
+            for (let i=0;i<tasks.length;i++){
+                const task = tasks[i];
+                renderRow(tableBody,task);
+            }
+        }
+//call the function
+renderTable();
+
+    </script>
+
+</tbody>
+
+    </table>
+    
+</body>
+
+</html>
