@@ -43,6 +43,9 @@ app.use('/api/piero/tasks', pieroTasksRouter);
 const thiagoTasksRouter = require('./api/thiago/tasks');
 app.use('/api/thiago/tasks', thiagoTasksRouter);
 
+const yagoTasksRouter = require('./api/yago/tasks');
+app.use('/api/yago/tasks', yagoTasksRouter);
+
 // Start server
 app.listen(3000, () => {
     console.log('Server Started');
