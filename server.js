@@ -38,7 +38,7 @@ const doyoungTasksRouter = require('./api/doyoung/tasks');
 app.use('/api/doyoung/tasks', doyoungTasksRouter);
 
 const pieroTasksRouter = require('./api/piero/tasks');
-app.use('/api/pieroTinoco/tasks', pieroTasksRouter);
+app.use('/api/piero/tasks', pieroTasksRouter);
 
 const thiagoTasksRouter = require('./api/thiago/tasks');
 app.use('/api/thiago/tasks', thiagoTasksRouter);
