@@ -20,14 +20,27 @@ router.get('/', function (req, res) {
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const filteredTasks = tasks.filter((task) => task.id === id);  
+    const filteredTasks = tasks.find((task) => task.id === id);  
     if (filteredTasks.length === 0){
         res.status(404).send({message: "Not found"});
         return;
     } 
     // Return all tasks
 
-    res.send(filteredTasks[0]);
+    res.send(filteredTasks);
+});
+
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
+    const id = parseInt(req.params.id);
+    const filteredTasks = tasks.findIndex((task) => task.id === id);  
+    if (filteredTasks.length === -1){
+        res.status(404).send({message: "Not found"});
+        return;
+    } 
+    // Remove task
+    tasks.splice(filteredTasks, 1)
+    res.status(204).send(); 
 });
 
 module.exports = router;
