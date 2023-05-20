@@ -32,4 +32,17 @@ router.get('/:id', function (req, res) {
     res.send(result);
 });
 
+router.delete('/:id', function (req, res) {
+    console.log("delete task by ID", req.params.id);
+    const result = tasks.findIndex(function (task) {
+        return task.id == req.params.id;
+    })
+    if (result=== -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // remove the tasks
+    tasks.splice(result,1);
+    res.status(204).send();
+});
 module.exports = router;
