@@ -22,13 +22,27 @@ router.get('/', function (req, res) {
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const result = tasks.filter((tasks) => tasks.id === id);
+    const result = tasks.find((tasks) => tasks.id === id);
     if (result.length === 0) {
         res.status(404).send({ message: "Task not found"});
         return;
     }
     // Return the task
-    res.send(filteredTasks[0]);
+    res.send(result);
+});
+
+// DELETE /tasks/:id
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
+    const id = parseInt(req.params.id);
+    const result = tasks.findIndex((tasks) => tasks.id === id);
+    if (result === -1) { // -1 means not found
+        res.status(404).send({ message: "Task not found"});
+        return;
+    }
+    // Remove the task
+    tasks.splice(result, 1);
+    res.status(204).send();
 });
 
 module.exports = router;

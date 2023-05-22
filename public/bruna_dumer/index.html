@@ -2,18 +2,20 @@
 <html lang="en">
 
     <head>
-        <title>Team - Spring 2023</title>
+        <title>To Do List</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
 
-    <body>
-        <a href="/">Back</a>
-        <h1>To-Do App</h1>
-        <form id="taskForm">
-            <label for="nameInput">Name</label>
-            <input id="nameInput" type="text" name="nameInput" placeholder="Enter your name">
-            <button id="addButton" type="button">Add</button>
+    <body class="bg-orange-300 flex justify-center items-center h-screen">
+      <div class="bg-white rounded-lg shadow-lg p-10">
+        
+        <a class="text-gray-400" href="/">Back</a>
+        <h1 class="text-5xl text-center uppercase font-bold m-5">To Do App</h1>
+        <form class="flex justify-center" id="taskForm">
+            <input class="bg-orange-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput" placeholder="Enter your task">
+            <button class="bg-orange-500 px-5 rounded-e-full" id="addButton" type="button">+</button>
             <button id="clearButton" type="button">Clear</button>
         </form>
 
@@ -28,25 +30,14 @@
             </thead>
 
             <tbody id="taskTableBody"> 
-                <!-- <tr>
-                    <td>1</td>
-                    <td>Task 1</td>
-                    <td><input type="checkbox"></td>
-                    <td><button>Remove</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Task 2</td>
-                    <td><input type="checkbox"></td>
-                    <td><button>Remove</button></td>
-                </tr> -->
+
             </tbody>
         </table>
 
         <script>
             console.log("Hello World!");
             async function fetchAllTasks(){
-                const response = await fetch("http:/api/bruna_dumer/tasks");
+                const response = await fetch("/api/bruna_dumer/tasks");
                 const data = await response.json();
                 return data;
             }
@@ -89,10 +80,12 @@
                     //Choice is null if the user clicks cancel
                     if (!choice){
                         return;
-                    } else {
-                    //Choice is true if the user clicks ok
-                        row.remove();
                     }
+                    //Choice is true if the user clicks ok
+                    await fetch(`/api/bruna_dumer/tasks/${task.id}`, {
+                        method: "DELETE"
+                    });
+                     row.remove();
                 });
 
                 row.append(actionsCol);
