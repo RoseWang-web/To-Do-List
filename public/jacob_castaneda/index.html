@@ -1,6 +1,153 @@
 <!DOCTYPE html>
-<html lang=" en"
+<html>
 <head>
-<meta charset="UTF -8"
-<meta 
+  <title>To-Do App</title>
+  <style>
+    /* Add some basic styling for the app */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #18af99;
+    }
+    
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    
+    .delete-btn {
+      background-color: #ff0000;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
+<body>
+  <h1>To-Do App</h1>
+  
+  <form id="task-form">
+    <input type="text" id="task-input" placeholder="Enter a task">
+    <button type="submit">Add Task</button>
+  </form>
+  
+  <table id="task-table">
+    <tr>
+      <th>Task</th>
+      <th>Action</th>
+    </tr>
+    <!-- Tasks will be dynamically added here -->
+  </table>
+  
+  <script>
+    // JavaScript code for handling task addition
+    document.getElementById("task-form").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      var taskInput = document.getElementById("task-input");
+      var taskTable = document.getElementById("task-table");
+      
+      var row = taskTable.insertRow(-1);
+      var taskCell = row.insertCell(0);
+      var actionCell = row.insertCell(1);
+      
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      
+      var taskLabel = document.createElement("span");
+      taskLabel.textContent = taskInput.value;
+      
+      taskCell.appendChild(checkbox);
+      taskCell.appendChild(taskLabel);
+      actionCell.innerHTML = '<button class="delete-btn" onclick="removeTask(this)">Delete</button>';
+      
+      taskInput.value = ""; // Clear the input field
+    });
+    
+    // JavaScript function for removing a task
+    function removeTask(button) {
+      var row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+    }
+  </script>
+</body>
+</html>
+<script>
+            console.log("Hello World");
+            async function fetchAllTasks() {
+                const response = await fetch("/api/jacob_castaneda/tasks");
+                const tasks = await response.json();
+                console.log("Number of tasks found: ", tasks.length);
+                return tasks;
+            }
+
+            function renderRow(tableBodyElement, task) {
+                console.log("Task: ", task);
+                const row = document.createElement("tr");
+                tableBodyElement.append(row);
+                // Create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+                // Create the Name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+                // Create the Done column
+                const doneCol = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+                doneCol.append(checkbox);
+                row.append(doneCol);
+                // Create the actions
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("remove");
+                actionCol.append(removeButton);
+                removeButton.addEventListener("click", function () {
+                    const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
+                    if (!choice) {
+                        return;
+                    }
+                    // Go ahead and delete it.
+                    console.log("Delete task id: ", task.id);
+                });
+                row.append(actionCol);
+            }
+
+            async function renderTable() {
+                const tasks = await fetchAllTasks();
+                const tableBody = document.getElementById("taskTableBody");
+                for (let i = 0; i < tasks.length; i++) {
+                    const task = tasks[i];
+                    // render the row
+                    renderRow(tableBody, task);
+                }
+            }
+            // Call the function
+            renderTable()
+        </script>
+    </body>
+
+</html>
