@@ -1,3 +1,4 @@
+
 // Based one:
 // https://expressjs.com/en/guide/routing.html
 const express = require('express');
@@ -5,10 +6,10 @@ const router = express.Router();
 
 /** @type{{id: number, name: string, done: boolean}[]} */
 const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
+    { id: 1, name: "Rose Wang", done: true },
+    { id: 2, name: "Samel Hung", done: true },
+    { id: 3, name: "Daniel Chen", done: false },
+    { id: 4, name: "South Zhun", done: false },
 ];
 
 // Search
@@ -19,15 +20,16 @@ router.get('/', function (req, res) {
 });
 
 router.get('/:id', function (req, res) {
-    console.log("Handling request to find task: ", req.params.id);
-    const id = parseInt(req.params.id);
-    const result = tasks.filter((task) => task.id === id);
-
-    if (result.length === 0) {
+    console.log("find task by ID", req.params.id);
+    const result = tasks.find(function (task) {
+        return task.id == req.params.id;
+    })
+    if (!result) {
         res.status(404).send({ message: "Not found" });
+        return;
     }
-
-    return res.send(result[0]);
+    // Return all tasks
+    res.send(result);
 });
 
 module.exports = router;
