@@ -58,12 +58,16 @@
                 const removeButton = document.createElement("button");
                 removeButton.append("remove");
                 actionCol.append(removeButton);
-                removeButton.addEventListener("click", function () {
+                removeButton.addEventListener("click", async function () {
                     const confirmed = window.confirm(`Are you sure you want to delete:\n${task.name}`);
                     if (!confirmed) {
                         console.log("The user does not want to proceed.");
                         return;
                     }
+                    await fetch(`/api/yago/tasks/${task.id}`, {
+                        method: "DELETE"
+                    });
+                    row.remove();
                     // Go ahead and delete it.
                     console.log("Delete task id: ", task.id);
                 });
