@@ -10,7 +10,6 @@ const tasks = [
     { id: 3, name: "some name 3", done: false },
     { id: 4, name: "some name 4", done: false },
 ];
-// Search
 
 router.get('/', function (req, res) {
     res.send(tasks);
@@ -27,7 +26,6 @@ router.get('/:id', function (req, res) {
     }
     // Return all tasks
     res.send(result[0]);
-    
 });
 
 router.delete('/:id', function (req, res) {
@@ -47,3 +45,4 @@ router.delete('/:id', function (req, res) {
 });
 
 module.exports = router; 
+

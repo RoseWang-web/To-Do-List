@@ -8,5 +8,8 @@
     "liveServer.settings.port": 5501,
     "[html]": {
         "editor.defaultFormatter": "vscode.html-language-features"
-    }
+    },
+    "workbench.colorTheme": "Monokai",
+    "window.zoomLevel": 0,
+    "editor.fontSize": 16
 }
