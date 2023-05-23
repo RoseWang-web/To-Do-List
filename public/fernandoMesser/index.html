@@ -58,14 +58,14 @@
                 const removeButton = document.createElement("button");
                 removeButton.append("remove");
                 actionCol.append(removeButton);
-                removeButton.addEventListener("click", function () {
+                removeButton.addEventListener("click", async function () {
                     const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
                     if (!choice) {
                         return;
                     }
                     // Go ahead and delete it.
                     console.log("Delete task id: ", task.id);
-                    fetch(`/api/fernandoMesser/tasks/${task.id}`, { method: 'DELETE' })
+                    await fetch(`/api/fernandoMesser/tasks/${task.id}`, { method: 'DELETE' })
                     row.remove();
                 });
                 row.append(actionCol);
