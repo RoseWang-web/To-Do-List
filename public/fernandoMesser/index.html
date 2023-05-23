@@ -66,6 +66,7 @@
                     // Go ahead and delete it.
                     console.log("Delete task id: ", task.id);
                     fetch(`/api/fernandoMesser/tasks/${task.id}`, { method: 'DELETE' })
+                    row.remove();
                 });
                 row.append(actionCol);
             }
