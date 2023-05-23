@@ -72,19 +72,20 @@
                     }
                     // Go ahead and delete it.
                     console.log("Delete task id: ", task.id);
-                    deleteTask(task.id);
-                    row.remove();
+                    deleteTask(task.id,row);
+                    
                 });
                 row.append(actionCol);
             }
 
-            async function deleteTask(taskId) {
+            async function deleteTask(taskId, row) {
             try {
                 const response = await fetch(`/api/andre/tasks/${taskId}`, {
                     method: 'DELETE'
                 });
                 if (response.status === 204) {
                     console.log("Task deleted successfully");
+                    row.remove();
                 } else {
                     console.log("Failed to delete task");
                 }
