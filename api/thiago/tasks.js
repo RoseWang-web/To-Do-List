@@ -32,4 +32,21 @@ router.get('/:id', function (req, res) {
     res.send(filteredTasks[0]);
 });
 
+// DELETE /api/thiago/tasks/id={id}
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to delete a task by id: ", req.params.id);
+    const id = parseInt(req.params.id);
+    const filteredTasksIndex = tasks.findIndex((task) => task.id === id);
+    if (filteredTasksIndex === -1) {
+        res.status(404).send({ message: "Task not found" });
+        return;
+    }
+
+    // Remove the task
+    tasks.splice(filteredTasksIndex, 1);
+
+    // Return task
+    res.status(204).send();
+});
+
 module.exports = router;
