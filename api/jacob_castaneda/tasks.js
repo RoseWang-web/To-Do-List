@@ -25,26 +25,26 @@ router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
     const result = tasks.find((task) => task.id === id);
-    if (result) {
-        res.status(404).send({ message: "Not found" });
+    if (!result) {
+        res.status(204).send({ message: "Not found" });
         return;
     }
     res.send(result);
 });
 
 
-router.delete('/', function (req, res) {
-    console.log("delete task by ID", req.params.id);
-    const result = task.id == req.params.id
-});
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
+    const id = parseInt(req.params.id);
+    const result = tasks.findIndex((task) => task.id === id);
+    if (result === -1) {
+        res.status(204).send({ message: "Not found" });
+        return;
+    }
 
-console.log("Hello World");
-async function fetchAllTasks() {
-    const response = await fetch("/api/jacob_castaneda/tasks");
-    const tasks = await response.json();
-    console.log("Number of tasks found: ", tasks.length);
-    return tasks;
-}
+    tasks.splice(result, 1);
+    res.status(204).send();
+});
 
 
 module.exports = router;
