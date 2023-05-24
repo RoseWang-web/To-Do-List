@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Do App</title>
-</head>
 
-<body>
-    <table id="taskTable">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>To Do App</title>
+    </head>
+
+    <body>
+        <button id="buttonAttempt">Try Me</button>
+
+        <table border="1">
+            <caption>
+                My To-Do list
+            </caption>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -17,48 +23,110 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-
-            <tbody id="taskTableBody"> 
-            </tbody>
+            <tbody id="taskTableBody"></tbody>
         </table>
- <script>
- const tableBody = document.getElementById("taskTableBody") 
 
-function addrow(task){
-const row = document.createElement("tr")
- tableBody.appendChild(row)
- const idcolumn = document.createElement("td")
- idcolumn.innerText = task.id
- row.appendChild(idcolumn)
- const nameColumn = document.createElement("td")
- nameColumn.innerText = task.name
- row.appendChild(nameColumn)
- const doneColumn = document.createElement("td")
- doneColumn.innerText = task.done
- row.appendChild(doneColumn)
-}
+        <script>
+            async function fetchtasks() {
+                const response = await fetch("/api/moroniIbarra/tasks");
+                const tasks = await response.json();
+                console.log("Number of tasks found: ", tasks.length);
+                return tasks;
+            }
+
+            function renderRow(tableBodyElement, task) {
+                console.log("Task: ", task);
+                const row = document.createElement("tr");
+                tableBodyElement.append(row);
+                // Create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+                // Create the Name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+                // Create the Done column
+                const doneCol = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+                doneCol.append(checkbox);
+                row.append(doneCol);
+                // Create the actions
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("Remove");
+                actionCol.append(removeButton);
+                removeButton.addEventListener("mouseover", async function () {
+                    console.log('You are about to remove the row:', row);
+                });
+
+                removeButton.addEventListener("click", async function () {
+                    const confirmed = window.confirm(`Are you sure you want to delete:\n${task.name}`);
+                    if (!confirmed) {
+                        return;
+                    }
+                    // Go ahead and delete it.
+                    console.log("Delete task id: ", task.id);
+                    await fetch(`/api/moroniIbarra/tasks/${task.id}`, {
+                        method: 'DELETE'
+                    })
+                    //Delete the row
+                    row.remove();
+                });
+                row.append(actionCol);
+            }
+
+            const tryMeButton = document.getElementById("buttonAttempt");
+            tryMeButton.addEventListener("mouseover", function () {
+                alert("You are about to click the button")
+            })
 
 
-function fetchTasks (){
-    console.log("fetching Tasks")
-    fetch("/api/moroniIbarra/tasks").then(function(response){
-        console.log(response)
-        response.json().then(function (data){
-            console.log(data)
-        for(let i = 0; i < data.length; i++){
-            const t = data [i]
-            addrow(t)
-        }
-        })
+            async function renderTable() {
+                const tasks = await fetchtasks();
+                const tableBody = document.getElementById("taskTableBody");
+                for (const element of tasks) {
+                    const task = element;
+                    //render the row
+                    renderRow(tableBody, task);
+                }
+            }
+            const taskData = {
+                name: "New task name",
+                done: false
+            };
+
+            fetch('/api/moroniIbarra/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(taskData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error creating task');
+                    }
+                })
+                .then(data => {
+                    console.log('New task created:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
 
+            // call the function
+            renderTable()
+        </script>
 
-    })
-}
+    </body>
+    <!--The sky is the limit-->
 
-fetchTasks()
- </script>
-    
-</body>
-<!--The sky is the limit-->
 </html>
