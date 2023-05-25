@@ -15,6 +15,13 @@
             <caption>
                 My To-Do list
             </caption>
+            <form id="taskForm">
+                <label for="nameInput">Name</label>
+                <input id="nameInput" type="text" name="name" />
+                <button id="addButton">Add</button>
+                <button id="clearButton" type="button">Clear</button>
+            </form>
+
             <thead>
                 <tr>
                     <th>ID</th>
@@ -95,31 +102,31 @@
                     renderRow(tableBody, task);
                 }
             }
-            const taskData = {
-                name: "New task name",
-                done: false
-            };
-
-            fetch('/api/moroniIbarra/tasks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(taskData)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Error creating task');
-                    }
-                })
-                .then(data => {
-                    console.log('New task created:', data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            /*  const taskData = {
+                 name: "New task name",
+                 done: false
+             };
+ 
+             fetch('/api/moroniIbarra/tasks', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify(taskData)
+             })
+                 .then(response => {
+                     if (response.ok) {
+                         return response.json();
+                     } else {
+                         throw new Error('Error creating task');
+                     }
+                 })
+                 .then(data => {
+                     console.log('New task created:', data);
+                 })
+                 .catch(error => {
+                     console.error('Error:', error);
+                 }); */
             // call the function
             renderTable()
 
@@ -174,7 +181,7 @@
 
             taskForm.addEventListener("submit", handleFormSubmit);
 
-
+            fetchtasks()
 
 
         </script>
