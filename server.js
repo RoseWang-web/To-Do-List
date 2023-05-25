@@ -10,6 +10,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 const brunaDumerTasksRouter = require('./api/bruna_dumer/tasks');
 app.use('/api/bruna_dumer/tasks', brunaDumerTasksRouter);
 
+const danbsTasksRouter = require('./api/danbs/tasks');
+app.use('/api/danbs/tasks', danbsTasksRouter);
+
 const danielCamargoTasksRouter = require('./api/danielcamargo/tasks');
 app.use('/api/danielcamargo/tasks', danielCamargoTasksRouter);
 
