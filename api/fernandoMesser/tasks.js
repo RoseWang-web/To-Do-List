@@ -16,6 +16,22 @@ router.get('/', function (req, res) {
     res.send(tasks);
 });
 
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((task) => task.id === id);  
+    if (index === -1){
+        res.status(404).send({message: "Not found"});
+        return;
+    } 
+    const { done } = req.body;
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    tasks[index].done = done;
+    res.send(tasks[index]);
+});
 // Search
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
@@ -53,10 +69,12 @@ router.post('/', function (req, res) {
     res.status(400).send({ message: "Invalid task data" });
     return;
   }
-  
+    const date = new Date();
+    const number = date.getTime();
   // Create a new task object
   const newTask = {
-    id: tasks.length + 1, // Generate a unique ID based on the length of the tasks array
+   
+    id: number, // Generate a unique ID based on the length of the tasks array
     name: name,
     done: done
   };
