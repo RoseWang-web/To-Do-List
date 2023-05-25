@@ -6,7 +6,13 @@
     "files.eol": "\n",
     "cSpell.words": [],
     "liveServer.settings.port": 5501,
+<<<<<<< HEAD
     "[html]": {
         "editor.defaultFormatter": "vscode.html-language-features"
     }
+=======
+    "workbench.colorTheme": "Monokai",
+    "window.zoomLevel": 0,
+    "editor.fontSize": 16,
+>>>>>>> 720336ed2435998d961bc669117639dde001f2b2
 }
