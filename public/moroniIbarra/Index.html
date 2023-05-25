@@ -2,26 +2,25 @@
 <html lang="en">
 
     <head>
+        <title>Moroni Ibarra - To Do App</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>To Do App</title>
     </head>
 
     <body>
+
         <button id="buttonAttempt">Try Me</button>
 
-        <table border="1">
-            <caption>
-                My To-Do list
-            </caption>
-            <form id="taskForm">
-                <label for="nameInput">Name</label>
-                <input id="nameInput" type="text" name="name" />
-                <button id="addButton">Add</button>
-                <button id="clearButton" type="button">Clear</button>
-            </form>
 
+        <h1>My To-Do list</h1>
+        <form id="taskForm">
+            <label for="nameInput">Name</label>
+            <input id="nameInput" type="text" name="name" />
+            <button id="addButton">Add</button>
+            <button id="clearButton" type="button">Clear</button>
+        </form>
+        <table border="1">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -29,22 +28,24 @@
                     <th>Done</th>
                     <th>Actions</th>
                 </tr>
-            </thead>
+            </thead>1
             <tbody id="taskTableBody"></tbody>
         </table>
 
         <script>
-            async function fetchtasks() {
-                const response = await fetch("/api/moroniIbarra/tasks");
-                const tasks = await response.json();
-                console.log("Number of tasks found: ", tasks.length);
-                return tasks;
-            }
+            //We start creating the script code that will help us to build the rest
+            //of the code
+            //Her is where fetch tasks was before, we'll move it forward
 
             function renderRow(tableBodyElement, task) {
                 console.log("Task: ", task);
                 const row = document.createElement("tr");
                 tableBodyElement.append(row);
+                /*So, here we have a great exaple, what we are doing is we are manually calling
+                whatever the tableBodyElement is in that way we pass and we avoid creating a variable
+                like const tableBody = document.getElementbyID("tasTableBody"). In this case the table body element already has
+                all the past features.
+                */
                 // Create the ID column
                 const idCol = document.createElement("td");
                 idCol.append(task.id);
@@ -68,7 +69,7 @@
                 removeButton.append("Remove");
                 actionCol.append(removeButton);
                 removeButton.addEventListener("mouseover", async function () {
-                    console.log('You are about to remove the row:', row);
+                    console.log('You are about to remove the row:'); //This one had ",row after the ' 
                 });
 
                 removeButton.addEventListener("click", async function () {
@@ -87,11 +88,36 @@
                 row.append(actionCol);
             }
 
+            /*  async function fetchtasks() {
+             const response = await fetch("/api/moroniIbarra/tasks");
+             const tasks = await response.json();
+                  console.log("Number of tasks found: ", tasks.length);
+              return tasks;
+
+              
+ } */
+            function fetchTasks() {
+                console.log("Fetching Tasks")
+                fetch("/api/moroniIbarra/tasks").then(function (response) {
+                    console.log(response)
+                    response.json().then(function (data) {
+                        console.log(data)
+                        for (let i = 0; i < data.length; i++) {
+                            const task = data[i]
+                            renderRow(task)
+                        }
+                    })
+                })
+
+
+            }
+            //This part here it is not an element required in the assignment, we were
+            //Practicing
             const tryMeButton = document.getElementById("buttonAttempt");
             tryMeButton.addEventListener("mouseover", function () {
                 alert("You are about to click the button")
             })
-
+            //End of practice
 
             async function renderTable() {
                 const tasks = await fetchtasks();
