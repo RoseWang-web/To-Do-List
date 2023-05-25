@@ -61,9 +61,40 @@
                 if (task.done) {
                     checkbox.setAttribute("checked", "");
                 }
+
+
+                /* doneCol.append(checkbox);
+                row.append(doneCol); */
+                // Create the actions
+
+                //When the checkbox is clicked then change the backend of task .
+                checkbox.addEventListener('change', function () {
+                    /*
+                    Do part of the changes from the actions that the checkbox has to change
+                    */
+                    fetch(`/api/moroniIbarra/tasks/${task.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ done: this.checked })
+
+                    }).then(function (response) {
+                        if (!response.ok) {
+                            console.error('Error updating task');
+                            this.checked = !this.checked
+                        }
+
+                    }.bind(this)).catch(function (error) {
+                        console.error(error);
+                        this.checked = !this.checked;
+                    }.bind(this))
+
+                });
+
                 doneCol.append(checkbox);
                 row.append(doneCol);
-                // Create the actions
+
                 const actionCol = document.createElement("td");
                 const removeButton = document.createElement("button");
                 removeButton.append("Remove");
