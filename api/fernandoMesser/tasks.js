@@ -43,4 +43,28 @@ router.delete('/:id', function (req, res) {
     res.status(204).send(); 
 });
 
+router.post('/', function (req, res) {
+  console.log("Handling request to create a task");
+  
+  const { name, done } = req.body;
+  
+  // Input validation
+  if (!name || typeof done !== "boolean") {
+    res.status(400).send({ message: "Invalid task data" });
+    return;
+  }
+  
+  // Create a new task object
+  const newTask = {
+    id: tasks.length + 1, // Generate a unique ID based on the length of the tasks array
+    name: name,
+    done: done
+  };
+  
+  // Add the new task to the tasks array
+  tasks.push(newTask);
+  
+  res.status(201).send(newTask);
+});
+
 module.exports = router;
