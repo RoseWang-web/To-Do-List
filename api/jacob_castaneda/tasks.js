@@ -8,34 +8,35 @@ const tasks = [
     { id: 1, name: "some name 1", done: false },
     { id: 2, name: "some name 2", done: false },
     { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
+    { id: 4, name: "some name 4", done: false }
 ];
 
+
+//
 // Search
-//task
-router.get('/', function (req,res) {
-    console.log ('Handling request to list all task');
-    return res.send(tasks);
+router.get('/', function (req, res) {
+    console.log("Handling request to search tasks"); //---
+    // Return all tasks
+    res.send(tasks);
 });
 
-router.get('/:id', function (req,res) {
-    console.log ('Handling request to find task: ', req.params.id);
+// tasks/1
+router.get('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const result = tasks.filter ( ( tasks)=> task.id ===id);
-    if(!result.length){
-        res.status(404).send({message:"not found"});
+    const result = tasks.find((task) => task.id === id);
+    if (result) {
+        res.status(404).send({ message: "Not found" });
         return;
-    }//end of if statement
-
-    // Return the task
-    res.send(result[0]);
-
+    }
+    res.send(result);
 });
 
-module.exports= router;
 
- 
+router.delete('/', function (req, res) {
+    console.log("delete task by ID", req.params.id);
+    const result = task.id == req.params.id
+});
 
 
-
-
+module.exports = router;
