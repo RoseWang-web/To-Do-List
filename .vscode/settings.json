@@ -3,10 +3,5 @@
     "html.format.indentInnerHtml": true,
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "files.eol": "\n",
-    "cSpell.words": [],
-    "liveServer.settings.port": 5501,
-    "workbench.colorTheme": "Monokai",
-    "window.zoomLevel": 0,
-    "editor.fontSize": 16,
+    "files.eol": "\n"
 }
