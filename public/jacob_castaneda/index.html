@@ -46,6 +46,7 @@
         row.append(nameCol);
         // Create the Done column
         const doneCol = document.createElement("td");
+
         const checkbox = document.createElement("input");
         checkbox.setAttribute("type", "checkbox");
         if (task.done) {
@@ -53,6 +54,7 @@
         }
         doneCol.append(checkbox);
         row.append(doneCol);
+
         // Create the actions
         const actionCol = document.createElement("td");
         const removeButton = document.createElement("button");
