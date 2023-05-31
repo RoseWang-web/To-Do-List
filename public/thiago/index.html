@@ -1,19 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>Thiago Farias</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+    <head>
+        <title>Thiago Farias</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
 
-<body>
-    <a href="/">Back</a>
-    <h1>Thiago Farias</h1>
-    <h2>Applications</h2>
-    <ul>
-        <li><a href="/thiago/todo.html">To-Do App</a></li>
-    </ul>
-</body>
+    <body>
+        <a href="/">Back</a>
+        <h1>To-Do App</h1>
+        <form id="taskForm">
+            <label for="nameInput">Name</label>
+            <input id="nameInput" type="text" name="name" />
+            <button id="addButton">Add</button>
+            <button id="clearButton" type="button">Clear</button>
+        </form>
+
+        <table border="1" id="taskTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Done</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="taskTableBody"></tbody>
+        </table>
+
+        <script>
+            console.log("Loading Page Scripts");
+
+            const tableBody = document.getElementById("taskTableBody")
+
+
+            function renderRow(task) {
+                console.log("Task: ", task);
+                const row = document.createElement("tr");
+                tableBody.append(row);
+                // Create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+                // Create the Name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+                // Create the Done column
+                const doneCol = document.createElement("td");
+
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+
+                checkbox.addEventListener('change', function () {
+                    // When the checkbox changes, update the backend
+                    fetch(`/api/thiago/tasks/${task.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ done: this.checked })
+                    }).then(function (response) {
+                        if (!response.ok) {
+                            console.error('Error updating task');
+                            // If the request failed, revert the checkbox
+                            this.checked = !this.checked;
+                        }
+                    }.bind(this)).catch(function (error) {
+                        console.error(error);
+                        // If the request failed, revert the checkbox
+                        this.checked = !this.checked;
+                    }.bind(this));
+                });
+
+                doneCol.append(checkbox);
+                row.append(doneCol);
+
+                // Create the actions
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("remove");
+                actionCol.append(removeButton);
+                removeButton.addEventListener("click", async function () {
+                    const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
+                    if (!choice) {
+                        return;
+                    }
+                    // Go ahead and delete it.
+                    console.log("Delete task id: ", task.id);
+                    await fetch(`/api/thiago/tasks/${task.id}`, { method: 'DELETE' })
+                    row.remove();
+                });
+                row.append(actionCol);
+            }
+
+            function fetchTasks() {
+                console.log("Fetching Tasks")
+                fetch("/api/thiago/tasks").then(function (response) {
+                    console.log(response)
+                    response.json().then(function (data) {
+                        console.log(data)
+                        for (let i = 0; i < data.length; i++) {
+                            const task = data[i]
+                            renderRow(task)
+                        }
+                    })
+                })
+            }
+
+            const taskForm = document.getElementById("taskForm");
+            function createTask(task) {
+                fetch("/api/thiago/tasks", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(task)
+                }).then(function (response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Error creating task');
+                        }
+                    }).then(function (data) {
+                        renderRow(data);
+                        document.getElementById("nameInput").value = "";
+                    }).catch(function (error) {
+                        console.error(error);
+                    });
+            }
+
+            function handleFormSubmit(event) {
+                event.preventDefault();
+
+                const nameInput = document.getElementById("nameInput");
+                const taskName = nameInput.value.trim();
+
+                if (taskName !== "") {
+                    const newTask = {
+                        id: generateUniqueId(), // Implement your own unique ID generation logic
+                        name: taskName,
+                        done: false
+                    };
+
+                    createTask(newTask);
+                }
+            }
+
+            function generateUniqueId() {
+                return Date.now().toString();
+            }
+
+            taskForm.addEventListener("submit", handleFormSubmit);
+
+            fetchTasks()
+        </script>
+    </body>
 
 </html>

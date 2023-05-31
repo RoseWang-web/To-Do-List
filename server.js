@@ -38,10 +38,17 @@ const doyoungTasksRouter = require('./api/doyoung/tasks');
 app.use('/api/doyoung/tasks', doyoungTasksRouter);
 
 const pieroTasksRouter = require('./api/piero/tasks');
-app.use('/api/pieroTinoco/tasks', pieroTasksRouter);
+app.use('/api/piero/tasks', pieroTasksRouter);
 
 const thiagoTasksRouter = require('./api/thiago/tasks');
 app.use('/api/thiago/tasks', thiagoTasksRouter);
+
+const yagoTasksRouter = require('./api/yago/tasks');
+app.use('/api/yago/tasks', yagoTasksRouter);
+
+const vegaTasksRouter = require('./api/vega/tasks');
+app.use('/api/vega/tasks', vegaTasksRouter);
+
 
 // Start server
 app.listen(3000, () => {
