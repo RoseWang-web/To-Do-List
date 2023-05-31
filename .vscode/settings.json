@@ -6,10 +6,7 @@
     "files.eol": "\n",
     "cSpell.words": [],
     "liveServer.settings.port": 5501,
-    "workbench.colorTheme": "Rosé Pine Dawn",
+    "workbench.colorTheme": "Monokai",
     "window.zoomLevel": 0,
     "editor.fontSize": 16,
-    "[html]": {
-        "editor.defaultFormatter": "vscode.html-language-features"
-    },
 }
