@@ -45,4 +45,25 @@ router.delete('/:id', function (req, res) {
     tasks.splice(result,1);
     res.status(204).send();
 });
+
+router.post('/', function(req, res) {
+  const { name, done } = req.body;
+
+  if (!name) {
+    res.status(400).send({ message: 'Task name is required.' });
+    return;
+  }
+
+  const newTask = {
+    id: tasks.length + 1,
+    name: name,
+    done: done || false
+  };
+
+  tasks.push(newTask);
+
+  res.status(201).send(newTask);
+});
+
+
 module.exports = router;

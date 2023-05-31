@@ -9,4 +9,7 @@
     "workbench.colorTheme": "Monokai",
     "window.zoomLevel": 0,
     "editor.fontSize": 16,
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
 }
