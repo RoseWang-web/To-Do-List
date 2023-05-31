@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "test": "mocha",
+    "start": "node server.js",
+    "dev": "postcss styles.css -o tailwind.css"
   },
   "author": "",
   "dependencies": {

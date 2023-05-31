@@ -38,13 +38,5 @@ router.delete('/', function (req, res) {
     const result = task.id == req.params.id
 });
 
-console.log("Hello World");
-async function fetchAllTasks() {
-    const response = await fetch("/api/jacob_castaneda/tasks");
-    const tasks = await response.json();
-    console.log("Number of tasks found: ", tasks.length);
-    return tasks;
-}
-
 
 module.exports = router;
