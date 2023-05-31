@@ -149,7 +149,7 @@
 
         }
 
-        //Update a task
+        // Update a task
         async function updateTask(task) {
           try {
             const response = await fetch(`/api/bruna_dumer/tasks/${task.id}`, {
@@ -163,6 +163,14 @@
             if (response.ok) {
               const updatedTask = await response.json();
               console.log(updatedTask);
+              const row = document.getElementById(`row-${updatedTask.id}`);
+              if (row) {
+                if (updatedTask.done) {
+                  row.classList.add("bg-gray-200", "line-through");
+                } else {
+                  row.classList.remove("bg-gray-200", "line-through");
+                }
+              }
             } else {
               console.error("Error updating task:", response.statusText);
             }
@@ -170,6 +178,7 @@
             console.error("Error updating task:", error);
           }
         }
+
 
 
         // Add event listener to the table
@@ -186,6 +195,10 @@
               done: checkbox.checked
             };
             await updateTask(task);
+
+            // Apply appropriate CSS classes based on task's "done" status
+            row.classList.toggle("bg-gray-200", checkbox.checked);
+            row.children[1].classList.toggle("line-through", checkbox.checked);
           }
         });
 
