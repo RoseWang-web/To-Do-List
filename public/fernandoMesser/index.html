@@ -46,13 +46,35 @@
                 row.append(nameCol);
                 // Create the Done column
                 const doneCol = document.createElement("td");
+
                 const checkbox = document.createElement("input");
                 checkbox.setAttribute("type", "checkbox");
                 if (task.done) {
                     checkbox.setAttribute("checked", "");
                 }
+                checkbox.addEventListener('change', function () {
+                    // When the checkbox changes, update the backend
+                    fetch(`/api/fernandoMesser/tasks/${task.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ done: this.checked })
+                    }).then(function (response) {
+                        if (!response.ok) {
+                            console.error('Error updating task');
+                            // If the request failed, revert the checkbox
+                            this.checked = !this.checked;
+                        }
+                    }.bind(this)).catch(function (error) {
+                        console.error(error);
+                        // If the request failed, revert the checkbox
+                        this.checked = !this.checked;
+                    }.bind(this));
+                });
                 doneCol.append(checkbox);
                 row.append(doneCol);
+
                 // Create the actions
                 const actionCol = document.createElement("td");
                 const removeButton = document.createElement("button");
