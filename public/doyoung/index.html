@@ -2,18 +2,92 @@
 <html lang="en">
 
 <head>
-    <title>Doyoung Yoon</title>
+    <title>Doyoung Yoon - To-Do App</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-    <a href="/public/index.html">Back</a>
-    <h1>Doyoung Yoon</h1>
-    <h2>Applications</h2>
-    <ul>
-        <li><a href="/public/doyoung/todo.html">To-Do App</a></li>
-    </ul>
+    <a href="/">Back</a>
+    <h1>To-Do App</h1>
+    <form id="taskForm">
+        <label for="nameInput">Name</label>
+        <input id="nameInput" type="text" name="name" />
+        <button id="addButton" onclick="test()">Add</button>
+        <button id="clearButton" type="button">Clear</button>
+    </form>
+
+    <table id="taskTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Done</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="taskTableBody"></tbody>
+    </table>
 </body>
+
+<script>
+            async function fetchAllTasks() {
+                const response = await fetch("/api/doyoung/tasks");
+                const tasks = await response.json();
+                console.log("Number of tasks found: ", tasks.length);
+                return tasks;
+            }
+
+            function renderRow(tableBodyElement, task) {
+                console.log("Task: ", task);
+                const row = document.createElement("tr");
+                tableBodyElement.append(row);
+                // Create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+                // Create the Name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+                // Create the Done column
+                const doneCol = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+                doneCol.append(checkbox);
+                row.append(doneCol);
+                // Create the actions
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("remove");
+                actionCol.append(removeButton);
+                removeButton.addEventListener("click", function () {
+                    const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
+                    if (!choice) {
+                        return;
+                    }
+                    // Go ahead and delete it.
+                    console.log("Delete task id: ", task.id);
+                });
+                row.append(actionCol);
+            }
+
+            async function renderTable() {
+                const tasks = await fetchAllTasks();
+                const tableBody = document.getElementById("taskTableBody");
+                for (let i = 0; i < tasks.length; i++) {
+                    const task = tasks[i];
+                    // render the row
+                    renderRow(tableBody, task);
+                }
+            }
+            // Call the function
+            renderTable()
+            
+        </script>
+
 
 </html>
