@@ -69,8 +69,8 @@ router.post('/', function (req, res) {
     res.status(400).send({ message: "Invalid task data" });
     return;
   }
-    const date = new Date();
-    const number = date.getTime();
+    // const date = new Date();
+    // const number = date.getTime();
     const id = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 5;
   // Create a new task object
   const newTask = {
