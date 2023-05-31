@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do App</title>
+</head>
+<body>
+    <table id="taskTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Done</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+             <tbody id="taskTableBody"> 
+                
+            </tbody>
+        </table>
+        <script>
+        const tableBody = document.getElementById("taskTableBody")
+
+    
+            async function fetchAllTasks() {
+                const response = await fetch("/api/stefany_peixoto/tasks");
+                const tasks = await response.json();
+                console.log("Number of tasks found: ", tasks.length);
+                return tasks;
+            }
+
+            function renderRow(tableBodyElement, task) {
+                console.log("fetching this")
+                console.log("Task: ", task);
+                const row = document.createElement("tr");
+                tableBodyElement.append(row);
+                // Create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+                // Create the Name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+                // Create the Done column
+                const doneCol = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+                doneCol.append(checkbox);
+                row.append(doneCol);
+                // Create the actions
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("remove");
+                actionCol.append(removeButton);
+                removeButton.addEventListener("click", async function () {
+                    const choice = window.confirm(`Are you sure you want to delete\n: ${task.name}`);
+                    if (!choice) {
+                        return;
+                    }
+                    // Go ahead and delete it.
+                    console.log("Delete task id: ", task.id);
+                    await fetch(`/api/stefany_peixoto/tasks/${task.id}`, { method: 'DELETE' })
+
+                })
+                row.append(actionCol);
+            }
+            async function renderTable() {
+                const tasks = await fetchAllTasks();
+                const tableBody = document.getElementById("taskTableBody");
+                for (let i = 0; i < tasks.length; i++) {
+                    const task = tasks[i];
+                    // render the row
+                    renderRow(tableBody, task);
+                }
+            }
+
+        renderTable()
+        </script>
+</body>
+</html>
