@@ -71,10 +71,11 @@ router.post('/', function (req, res) {
   }
     const date = new Date();
     const number = date.getTime();
+    const id = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 5;
   // Create a new task object
   const newTask = {
    
-    id: number, // Generate a unique ID based on the length of the tasks array
+    id: id, // Generate a unique ID based on the length of the tasks array
     name: name,
     done: done
   };
