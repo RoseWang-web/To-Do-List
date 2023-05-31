@@ -32,37 +32,51 @@
         <script>
             console.log("Loading Page Scripts");
 
-            async function fetchAllTasks() {
-                const response = await fetch("/api/thiago/tasks");
-                const tasks = await response.json();
-                console.log("Number of tasks found: ", tasks.length);
-                return tasks;
-            }
+            const tableBody = document.getElementById("taskTableBody")
 
-            function renderRow(tableBodyElement, task) {
+
+            function renderRow(task) {
                 console.log("Task: ", task);
-
                 const row = document.createElement("tr");
-                tableBodyElement.append(row);
-
+                tableBody.append(row);
                 // Create the ID column
                 const idCol = document.createElement("td");
                 idCol.append(task.id);
                 row.append(idCol);
-
                 // Create the Name column
                 const nameCol = document.createElement("td");
                 nameCol.append(task.name);
                 row.append(nameCol);
-
                 // Create the Done column
                 const doneCol = document.createElement("td");
+
                 const checkbox = document.createElement("input");
                 checkbox.setAttribute("type", "checkbox");
 
                 if (task.done) {
                     checkbox.setAttribute("checked", "");
                 }
+
+                checkbox.addEventListener('change', function () {
+                    // When the checkbox changes, update the backend
+                    fetch(`/api/thiago/tasks/${task.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ done: this.checked })
+                    }).then(function (response) {
+                        if (!response.ok) {
+                            console.error('Error updating task');
+                            // If the request failed, revert the checkbox
+                            this.checked = !this.checked;
+                        }
+                    }.bind(this)).catch(function (error) {
+                        console.error(error);
+                        // If the request failed, revert the checkbox
+                        this.checked = !this.checked;
+                    }.bind(this));
+                });
 
                 doneCol.append(checkbox);
                 row.append(doneCol);
@@ -78,27 +92,73 @@
                         return;
                     }
                     // Go ahead and delete it.
-                    console.log("Deleting task id: ", task.id);
-                    const response = await fetch(`/api/thiago/tasks/${task.id}`, {method: "DELETE"});
-
+                    console.log("Delete task id: ", task.id);
+                    await fetch(`/api/thiago/tasks/${task.id}`, { method: 'DELETE' })
                     row.remove();
                 });
-
                 row.append(actionCol);
             }
 
-            async function renderTable() {
-                const tasks = await fetchAllTasks();
-                const tableBody = document.getElementById("taskTableBody");
-                for (let i = 0; i < tasks.length; i++) {
-                    const task = tasks[i];
-                    // render the row
-                    renderRow(tableBody, task);
+            function fetchTasks() {
+                console.log("Fetching Tasks")
+                fetch("/api/thiago/tasks").then(function (response) {
+                    console.log(response)
+                    response.json().then(function (data) {
+                        console.log(data)
+                        for (let i = 0; i < data.length; i++) {
+                            const task = data[i]
+                            renderRow(task)
+                        }
+                    })
+                })
+            }
+
+            const taskForm = document.getElementById("taskForm");
+            function createTask(task) {
+                fetch("/api/thiago/tasks", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(task)
+                }).then(function (response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Error creating task');
+                        }
+                    }).then(function (data) {
+                        renderRow(data);
+                        document.getElementById("nameInput").value = "";
+                    }).catch(function (error) {
+                        console.error(error);
+                    });
+            }
+
+            function handleFormSubmit(event) {
+                event.preventDefault();
+
+                const nameInput = document.getElementById("nameInput");
+                const taskName = nameInput.value.trim();
+
+                if (taskName !== "") {
+                    const newTask = {
+                        id: generateUniqueId(), // Implement your own unique ID generation logic
+                        name: taskName,
+                        done: false
+                    };
+
+                    createTask(newTask);
                 }
             }
 
-            // Call the function
-            renderTable()
+            function generateUniqueId() {
+                return Date.now().toString();
+            }
+
+            taskForm.addEventListener("submit", handleFormSubmit);
+
+            fetchTasks()
         </script>
     </body>
 

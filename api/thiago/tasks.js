@@ -49,4 +49,55 @@ router.delete('/:id', function (req, res) {
     res.status(204).send();
 });
 
+// POST /api/thiago/tasks/
+router.post('/', function (req, res) {
+    console.log("Handling request to create a task");
+
+    const { name, done } = req.body;
+
+    // Input validation
+    if (!name || typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+
+    // Create a new task object
+    const newTask = {
+        id: tasks.length + 1, // Generate a unique ID based on the length of the tasks array
+        name: name,
+        done: done
+    };
+
+    // Add the new task to the tasks array
+    tasks.push(newTask);
+
+    res.status(201).send(newTask);
+});
+
+// PUT /api/thiago/tasks/id={id}
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
+
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((task) => task.id === id);
+    const { done } = req.body;
+
+    // Input validation
+    if (index === -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+
+    // Input validation
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+
+    // Updating the task to the tasks array
+    tasks[index].done = done;
+
+    res.send(tasks[index]);
+});
+
 module.exports = router;
