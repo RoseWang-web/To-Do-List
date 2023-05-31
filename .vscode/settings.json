@@ -3,7 +3,5 @@
     "html.format.indentInnerHtml": true,
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "files.eol": "\n",
-    "cSpell.words": [],
-    "liveServer.settings.port": 5501
+    "files.eol": "\n"
 }
