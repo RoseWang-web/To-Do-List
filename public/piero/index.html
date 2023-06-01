@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-        <title>piero - To-Do App</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>To Do App</title>
     </head>
 
     <body>
@@ -28,6 +27,70 @@
             </thead>
             <tbody id="taskTableBody"></tbody>
         </table>
+
+        <script>
+            async function fetchAllTasks() {
+                const response = await fetch("/api/piero/tasks");
+                const tasks = await response.json();
+                console.log("Number of tasks found: ", tasks.length);
+                return tasks;
+            }
+
+           function renderRow(tableBodyElement, task) {
+                console.log("Task: ", task);
+                const row = document.createElement("tr");
+                tableBodyElement.append(row);
+                // Create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+                // Create the Name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+                // Create the Done column
+                const doneCol = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+                doneCol.append(checkbox);
+                row.append(doneCol);
+                // Create the actions
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("remove");
+                actionCol.append(removeButton);
+                removeButton.addEventListener("click", async function () {
+                    const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
+                    if (!choice) {
+                        return;
+                    }
+                    // Go ahead and delete it.
+                    console.log("Delete task id: ", task.id);
+                    await fetch(`/api/piero/tasks/${task.id}`, {
+                        method: 'DELETE'
+                    });
+                    // delete the row
+
+
+                });
+                row.append(actionCol);
+            }
+
+            async function renderTable() {
+                const tasks = await fetchAllTasks();
+                const tableBody = document.getElementById("taskTableBody");
+                for (let i = 0; i < tasks.length; i++) {
+                    const task = tasks[i];
+                    // render the row
+                    renderRow(tableBody, task);}
+                }
+
+             renderTable()
+        </script>
+
     </body>
 
 </html>

@@ -10,6 +10,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 const brunaDumerTasksRouter = require('./api/bruna_dumer/tasks');
 app.use('/api/bruna_dumer/tasks', brunaDumerTasksRouter);
 
+const danbsTasksRouter = require('./api/danbs/tasks');
+app.use('/api/danbs/tasks', danbsTasksRouter);
+
 const danielCamargoTasksRouter = require('./api/danielcamargo/tasks');
 app.use('/api/danielcamargo/tasks', danielCamargoTasksRouter);
 
@@ -41,10 +44,17 @@ const doyoungTasksRouter = require('./api/doyoung/tasks');
 app.use('/api/doyoung/tasks', doyoungTasksRouter);
 
 const pieroTasksRouter = require('./api/piero/tasks');
-app.use('/api/pieroTinoco/tasks', pieroTasksRouter);
+app.use('/api/piero/tasks', pieroTasksRouter);
 
 const thiagoTasksRouter = require('./api/thiago/tasks');
 app.use('/api/thiago/tasks', thiagoTasksRouter);
+
+const yagoTasksRouter = require('./api/yago/tasks');
+app.use('/api/yago/tasks', yagoTasksRouter);
+
+const vegaTasksRouter = require('./api/vega/tasks');
+app.use('/api/vega/tasks', vegaTasksRouter);
+
 
 // Start server
 app.listen(3000, () => {
