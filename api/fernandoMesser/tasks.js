@@ -60,17 +60,17 @@ router.delete('/:id', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-    console.log("Handling request to create a task");
-
-    const { name, done } = req.body;
-
-    // Input validation
-    if (!name || typeof done !== "boolean") {
-        res.status(400).send({ message: "Invalid task data" });
-        return;
-    }
-    const date = new Date();
-    const number = date.getTime();
+  console.log("Handling request to create a task");
+  
+  const { name, done } = req.body;
+  
+  // Input validation
+  if (!name || typeof done !== "boolean") {
+    res.status(400).send({ message: "Invalid task data" });
+    return;
+  }
+    //const date = new Date();
+    //const number = date.getTime();
     const id = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 5;
     // Create a new task object
     const newTask = {
