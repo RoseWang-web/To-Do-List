@@ -7,9 +7,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>To Do App</title>
         <link rel="icon" href="icon.png">
+        <script src="https://cdn.tailwindcss.com"></script>
+
     </head>
 
     <body>
+        <form id="taskForm" onsubmit="createTask(event)">
+            <label for="nameInput">Name</label>
+            <input id="nameInput" type="text" name="name" />
+            <button id="addButton">Add</button>
+            <button id="clearButton" type="button">Clear</button>
+        </form>
+
+
         <table>
             <thead>
                 <tr>
@@ -22,7 +32,7 @@
         <script>
             const tableBody = document.getElementById("TableBody");
 
-            async function fetchTasks() {
+            async function fetchTasksAndRenderTable() {
                 const response = await fetch("/api/yago/tasks");
                 const tasks = await response.json();
                 console.log("Tasks: ", tasks);
@@ -32,7 +42,7 @@
                 }
             }
 
-            const getTaskAndCreateRow = function (task) {
+            function getTaskAndCreateRow(task) {
                 console.log("Task: ", task);
                 const row = document.createElement("tr");
                 tableBody.append(row);
@@ -74,7 +84,44 @@
                 row.append(actionCol);
             }
 
-            fetchTasks();
+            async function createTask(event) {
+                // Prevent form from being submitted.
+                event.preventDefault();
+                const nameInput = document.getElementById("nameInput");
+                const taskName = nameInput.value.trim();
+                if (!taskName) {
+                    alert('Task name cannot be empty');
+                    return;
+                }
+
+                const newTask = {
+                    name: taskName,
+                    done: false
+                };
+                // Send a post request to create a task and expect a responde back.
+                const response = await fetch("/api/yago/tasks", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newTask)
+                });
+                // Check if response was successful
+                if (!response.ok) {
+                    throw new Error('Error creating task');
+                }
+                // Get the data and render a new row
+                const recentlyCreatedTask = await response.json();
+                getTaskAndCreateRow(recentlyCreatedTask);
+                document.getElementById("nameInput").value = "";
+            }
+
+            async function updateTask() {
+
+            }
+
+            // Start my table
+            fetchTasksAndRenderTable();
         </script>
     </body>
 

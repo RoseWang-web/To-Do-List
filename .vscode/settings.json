@@ -3,5 +3,8 @@
     "html.format.indentInnerHtml": true,
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "files.eol": "\n"
+    "files.eol": "\n",
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    }
 }
