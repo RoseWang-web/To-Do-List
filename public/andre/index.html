@@ -5,9 +5,10 @@
         <title>Andre - To-Do App</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     </head>
 
-    <body>
+    <body class="p-6">
         <a href="/">Back</a>
         <h1>To-Do App</h1>
         <form id="taskForm">
@@ -58,6 +59,27 @@
                 if (task.done) {
                     checkbox.setAttribute("checked", "");
                 }
+                checkbox.addEventListener('change', function () {
+                    // When the checkbox changes, update the backend
+                    fetch(`/api/andre/tasks/${task.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ done: this.checked })
+                    }).then(function (response) {
+                        if (!response.ok) {
+                            console.error('Error updating task');
+                            // If the request failed, revert the checkbox
+                            this.checked = !this.checked;
+                        }
+                    }.bind(this)).catch(function (error) {
+                        console.error(error);
+                        // If the request failed, revert the checkbox
+                        this.checked = !this.checked;
+                    }.bind(this));
+                });
+
                 doneCol.append(checkbox);
                 row.append(doneCol);
                 // Create the actions
@@ -104,6 +126,39 @@
                 }
             }
 
+            //Add task
+            const addButton = document.getElementById("addButton");
+            addButton.addEventListener("click", async function (event) {
+                event.preventDefault();
+                const nameInput = document.getElementById("nameInput");
+                const name = nameInput.value.trim();
+                if (name === "") {
+                    return;
+                }
+                const newTask = { name: name, done: false };
+
+                try {
+                    const response = await fetch("/api/andre/tasks", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(newTask),
+                    });
+
+                    if (response.status === 201) {
+                        console.log("Task created successfully");
+                        nameInput.value = "";
+                        const createdTask = await response.json();
+                        const tableBody = document.getElementById("taskTableBody");
+                        renderRow(tableBody, createdTask);
+                    } else {
+                        console.log("Failed to create task");
+                    }
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                }
+            });
             
             // Call the function
             renderTable()

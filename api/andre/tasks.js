@@ -50,4 +50,48 @@ router.delete('/:id', function (req, res) {
     res.status(204).send();
 });
 
+// POST /tasks
+router.post('/', function(req, res) {
+  console.log("Handling request to create a new task");
+  const { name } = req.body;
+
+  if (!name) {
+    res.status(400).send({ message: "Name is required" });
+    return;
+  }
+
+  const id = tasks.length + 1;
+  const newTask = {
+    id: id,
+    name: name,
+    done: false
+  };
+
+  tasks.push(newTask);
+  res.status(201).send(newTask);
+});
+
+// PUT /tasks/:id
+router.put('/:id', function(req, res) {
+  console.log("Handling request to update a task by id: ", req.params.id);
+  const id = parseInt(req.params.id);
+  const task = tasks.find(task => task.id === id);
+
+  if (!task) {
+    res.status(404).send({ message: "Not found" });
+    return;
+  }
+
+  const { name, done } = req.body;
+
+  if (name) {
+    task.name = name;
+  }
+
+  if (done !== undefined) {
+    task.done = done;
+  }
+
+  res.send(task);
+});
 module.exports = router;
