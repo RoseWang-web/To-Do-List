@@ -32,3 +32,67 @@ router.get('/:id', function (req, res) {
 });
 
 module.exports = router;
+/////////////////////////////////////////
+// Create a new task
+router.post('/', function (req, res) {
+    console.log("Handling request to create a task");
+  
+    const { name, done } = req.body;
+  
+    // Input validation
+    if (!name || typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+  
+    // Create a new task object
+    const newTask = {
+        id: (new Date()).getTime(),
+        name: name,
+        done: done
+    };
+  
+    // Add the new task to the tasks array
+    tasks.push(newTask);
+  
+    // Respond with the new task
+    res.status(201).send(newTask);
+});
+
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to delete a task");
+    const id = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex((task) => task.id === id);
+    if (taskIndex === -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // Remove task
+    tasks.splice(taskIndex, 1)
+    res.status(204).send();
+});
+
+// Update an existing task
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
+
+    const id = parseInt(req.params.id);
+    const { done } = req.body;
+
+    // Input validation
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+
+    // Find the task
+    const task = tasks.find(task => task.id === id);
+
+    // Update the task
+    if (task) {
+        task.done = done;
+        res.send(task);
+    } else {
+        res.status(404).send({ message: "Task not found" });
+    }
+});
