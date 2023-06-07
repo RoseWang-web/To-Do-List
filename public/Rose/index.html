@@ -9,7 +9,23 @@
 
 <body>
     <h1>To-Do App</h1>
-    
+    <!-- <p>Enter the ID you want to search:</p>
+    <input type = "text" id="IDInput" name="ID" placeholder="Enter ID" value="" />
+    <button id="searchIDButton" click="searchById">Search by ID</button>
+<script>
+  // Function to handle the click event
+  function searchById() {
+    // Get the ID from the user
+    var id = prompt("Enter the ID:");
+
+    // Perform the search operation
+    // Replace this with your own logic
+    alert("Searching for ID: " + id);
+  } -->
+
+  // Attach the click event handler to the button
+ // document.getElementById("searchButton").addEventListener("click", searchById);
+</script>
     <table border="1" id="taskTable">
 
 <thead> 
@@ -23,9 +39,16 @@
 </thead>
 
 <tbody id="taskTableBody">
-
+    <!-- <tr>
+        <td>1</td>
+        <td>rrrose</td>
+        <td>dd</td>
+        <td>ss</td>
+        <td><input type="file"></td>
+    </tr> -->
     <script>
        console.log("Hello World");
+       
         async function fetchAllTasks(){
             const response = await fetch("/api/rose/tasks");
             const tasks= await response.json();
@@ -53,11 +76,12 @@
             }
             doneCol.append(checkbox);
             row.append(doneCol);
+
              const actionCol = document.createElement("td");
              const removeButton=document.createElement("button");
              removeButton.append("remove");
              actionCol.append(removeButton);
-             removeButton.addEventListener("click", function(){
+             removeButton.addEventListener("click", async function(){
                 const choice = window.confirm(`Are you sure you want to delete\n: ${task.name}`);
                 if(!choice){
                     return;
@@ -65,8 +89,17 @@
              
                 //Go ahead and delete the task.
                 console.log("delete ID",task.id);
+                await fetch(`/api/rose/tasks/${task.id}`, { method: 'DELETE' })
              })
             row.append(actionCol);
+
+            // try to do a subject file
+            const subCol = document.createElement("td");
+            const subFile = document.createElement("input");
+            subFile.setAttribute("type", "file");
+    
+            subCol.append(subFile);
+            row.append(subCol);
         }
         async function renderTable(){
             const tasks = await fetchAllTasks();
