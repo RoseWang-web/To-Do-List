@@ -14,3 +14,4 @@ node_modules
 
 # Project specific
 dist
+tasks.json

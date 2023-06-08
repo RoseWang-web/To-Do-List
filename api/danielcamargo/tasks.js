@@ -2,9 +2,24 @@
 
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
 
 /** @type{{id: number, name: string, done: boolean}[]} */
-const tasks = [];
+let tasks = [];
+
+function saveTasksToFile() {
+    fs.writeFileSync('tasks.json', JSON.stringify(tasks));
+}
+
+function loadTasksFromFile() {
+    if (!fs.existsSync('tasks.json')) {
+        return;
+    }
+    const json = fs.readFileSync('tasks.json');
+    tasks = JSON.parse(json);
+}
+
+loadTasksFromFile();
 
 // GET /tasks
 router.get('/', function (req, res) {
@@ -35,6 +50,7 @@ router.put('/:id', function (req, res) {
     }
     tasks[index].done = done;
     console.log('out', tasks[index]);
+    saveTasksToFile(tasks);
     res.send(tasks[index]);
 });
 
@@ -68,6 +84,7 @@ router.post('/', function (req, res) {
         done: false,
     };
     tasks.push(newTask);
+    saveTasksToFile(tasks);
     res.status(201).send(newTask);
 });
 
@@ -81,13 +98,7 @@ router.delete('/:id', function (req, res) {
         return;
     }
     tasks.splice(index, 1);
-    res.status(204).send();
-});
-
-//DELETE /allTasks
-router.delete('/', function (req, res) {
-    console.log("Deleting all tasks");
-    tasks.splice(0, tasks.length);
+    saveTasksToFile(tasks);
     res.status(204).send();
 });
 
