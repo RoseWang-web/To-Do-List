@@ -1,36 +1,94 @@
-// Based one:
-// https://expressjs.com/en/guide/routing.html
+// tasks.js
+
 const express = require('express');
 const router = express.Router();
 
 /** @type{{id: number, name: string, done: boolean}[]} */
-const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
-    { id: 5, name: "some name 5", done: false },
-];
+const tasks = [];
 
 // GET /tasks
 router.get('/', function (req, res) {
-    console.log("Handling request to list all tasks");
-    // Return all tasks
+    console.log("Handling request to search tasks");
     res.send(tasks);
 });
 
-// GET /tasks/5
-router.get('/:id', function (req, res) {
-    console.log("Handling request to find a task by id: ", req.params.id);
+//Update a task based on its ID
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
     const id = parseInt(req.params.id);
-    const filteredTasks = tasks.filter((task) => task.id === id);
-    if (filteredTasks.length === 0) {
+    const index = tasks.findIndex((tasks) => tasks.id === id);
+    if (index === -1) {
         res.status(404).send({ message: "Not found" });
         return;
     }
 
-    // Return the task
-    res.send(filteredTasks[0]);
+    const task = req.body;
+    const { name, done } = task;
+    console.log('in', task);
+    if (!name || !name.trim()) {
+        res.status(400).send({ message: "Task must have a name" });
+        return;
+    }
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    tasks[index].done = done;
+    console.log('out', tasks[index]);
+    res.send(tasks[index]);
+});
+
+// GET /tasks/:id
+router.get('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
+    const id = parseInt(req.params.id);
+    const result = tasks.find((tasks) => tasks.id === id);
+    if (!result) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    res.send(result[0]);
+});
+
+//Understand the purpose of this endpoint
+
+// POST /tasks
+router.post('/', function (req, res) {
+    console.log("Creating task");
+    const task = req.body;
+    if (!task.name) {
+        res.status(400).send({ message: "Task must have a name" });
+        return;
+    }
+
+    // Add the task
+    const newTask = {
+        id: new Date().getTime(),
+        name: task.name,
+        done: false,
+    };
+    tasks.push(newTask);
+    res.status(201).send(newTask);
+});
+
+// DELETE /tasks/:id
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to delete a task");
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((tasks) => tasks.id === id);
+    if (index === -1) {
+        res.status(404).send({ message: "Task not found" });
+        return;
+    }
+    tasks.splice(index, 1);
+    res.status(204).send();
+});
+
+//DELETE /allTasks
+router.delete('/', function (req, res) {
+    console.log("Deleting all tasks");
+    tasks.splice(0, tasks.length);
+    res.status(204).send();
 });
 
 module.exports = router;
