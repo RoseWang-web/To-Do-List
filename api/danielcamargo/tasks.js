@@ -27,19 +27,17 @@ router.get('/', function (req, res) {
     res.send(tasks);
 });
 
-//Update a task based on its ID
+// Update a task
 router.put('/:id', function (req, res) {
     console.log("Handling request to update a task");
     const id = parseInt(req.params.id);
-    const index = tasks.findIndex((tasks) => tasks.id === id);
-    if (index === -1) {
+    const task = tasks.find((tasks) => tasks.id === id);
+    if (!task) {
         res.status(404).send({ message: "Not found" });
         return;
     }
 
-    const task = req.body;
-    const { name, done } = task;
-    console.log('in', task);
+    const { name, done } = req.body;
     if (!name || !name.trim()) {
         res.status(400).send({ message: "Task must have a name" });
         return;
@@ -48,13 +46,14 @@ router.put('/:id', function (req, res) {
         res.status(400).send({ message: "Invalid task data" });
         return;
     }
-    tasks[index].done = done;
-    console.log('out', tasks[index]);
+
+    task.done = done;
+    task.name = name;
     saveTasksToFile(tasks);
-    res.send(tasks[index]);
+    res.send(task);
 });
 
-// GET /tasks/:id
+// Find a task
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
@@ -66,9 +65,7 @@ router.get('/:id', function (req, res) {
     res.send(result[0]);
 });
 
-//Understand the purpose of this endpoint
-
-// POST /tasks
+// Create task
 router.post('/', function (req, res) {
     console.log("Creating task");
     const task = req.body;
@@ -88,7 +85,7 @@ router.post('/', function (req, res) {
     res.status(201).send(newTask);
 });
 
-// DELETE /tasks/:id
+// Delete task
 router.delete('/:id', function (req, res) {
     console.log("Handling request to delete a task");
     const id = parseInt(req.params.id);
