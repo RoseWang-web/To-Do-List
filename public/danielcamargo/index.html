@@ -11,7 +11,9 @@
     <body>
         <div x-data="todoApp()" @keydown.escape.window="cancelTaskUpdate" class="p-6 max-w-xl mx-auto">
             <a href="/">Back</a>
-            <h1>To-Do App</h1>
+            <h1
+                class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                To-Do Appdv</h1>
             <form id="taskForm" @submit.prevent="createTask">
                 <label for="nameInput">Name</label>
                 <input id="nameInput" x-model="taskName" type="text" name="taskName" />
