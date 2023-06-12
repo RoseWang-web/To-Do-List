@@ -49,8 +49,8 @@ app.use('/api/thiago/tasks', thiagoTasksRouter);
 const yagoTasksRouter = require('./api/yago/tasks');
 app.use('/api/yago/tasks', yagoTasksRouter);
 
-const vegaTasksRouter = require('./api/vega/tasks');
-app.use('/api/vega/tasks', vegaTasksRouter);
+// const vegaTasksRouter = require('./api/vega/tasks');
+// app.use('/api/vega/tasks', vegaTasksRouter);
 
 
 // Start server
