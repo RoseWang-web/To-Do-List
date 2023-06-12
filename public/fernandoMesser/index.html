@@ -5,162 +5,239 @@
         <title>Fernando Messer - To-Do App</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     </head>
 
+
     <body>
-        <a href="/">Back</a>
-        <h1>To-Do App</h1>
-        <form id="taskForm">
-            <label for="nameInput">Name</label>
-            <input id="nameInput" type="text" name="name" />
-            <button id="addButton">Add</button>
-            <button id="clearButton" type="button">Clear</button>
-        </form>
 
-        <table border="1" id="taskTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Done</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="taskTableBody"></tbody>
-        </table>
-        <script>
-            const tableBody = document.getElementById("taskTableBody")
+        <body class="bg-gray-100 flex justify-center items-center h-screen">
+            <div class="text-gray-600 rounded-lg shadow-lg p-10">
+                <a class="text-gray-500" href="/">Back</a>
 
 
-            function renderRow(task) {
-                console.log("Task: ", task);
-                const row = document.createElement("tr");
-                tableBody.append(row);
-                // Create the ID column
-                const idCol = document.createElement("td");
-                idCol.append(task.id);
-                row.append(idCol);
-                // Create the Name column
-                const nameCol = document.createElement("td");
-                nameCol.append(task.name);
-                row.append(nameCol);
-                // Create the Done column
-                const doneCol = document.createElement("td");
+                <div class="flex items-center mb-6">
+                    <svg class="h-8 w-8 text-indigo-500 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                    <h1 class="font-semibold ml-3 text-3xl">To Do App</h1>
+                </div>
+                <div>
 
-                const checkbox = document.createElement("input");
-                checkbox.setAttribute("type", "checkbox");
-                if (task.done) {
-                    checkbox.setAttribute("checked", "");
-                }
-                checkbox.addEventListener('change', function () {
-                    // When the checkbox changes, update the backend
-                    fetch(`/api/fernandoMesser/tasks/${task.id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ done: this.checked })
-                    }).then(function (response) {
-                        if (!response.ok) {
-                            console.error('Error updating task');
-                            // If the request failed, revert the checkbox
-                            this.checked = !this.checked;
+                    <form class="flex justify-center" id="taskForm">
+
+                        <button class="flex items-center h-8 px-2 mt-2 text-sm font-medium rounded">
+                            <svg class="w-5 h-5 text-gray-400 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            <input class="flex-grow h-8 ml-4 bg-transparent focus:outline-none font-medium"
+                                id="nameInput" type="text" name="nameInput" placeholder="Add a new task">
+                        </button>
+
+                        <button class="bg-red-500 text-gray-100 text-xs m-2 py-2 px-1 rounded hover:bg-red-400"
+                            id="clearButton" type="button">Clear Tasks</button>
+                    </form>
+
+                    <table class="mt-4 mx-auto text-center" id="taskTable">
+                        <tbody id="taskTableBody">
+                            <tr class="text-gray-500">
+                                <th class="px-4">Done</th>
+                                <th class="px-4">Name</th>
+                                <th class="px-4">#</th>
+                                <th class="px-4">Remove</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <script>
+                        const tableBody = document.getElementById("taskTableBody")
+
+                        function renderRow(task) {
+                            console.log("Task: ", task);
+                            const row = document.createElement("tr");
+                            tableBody.append(row);
+
+                            // Create the ID column
+                            const idCol = document.createElement("td");
+                            idCol.append(task.id);
+                            row.append(idCol);
+
+
+                            // Create the Name column
+                            const nameCol = document.createElement("td");
+                            nameCol.append(task.name);
+                            row.append(nameCol);
+
+
+                            // Create the Done column
+                            const doneCol = document.createElement("td");
+                            const checkbox = document.createElement("input");
+                            checkbox.setAttribute("type", "checkbox");
+                            if (task.done) {
+                                checkbox.setAttribute("checked", "");
+                                row.classList.add("bg-gray-200", "line-through");
+                            }
+                            checkbox.addEventListener('change', async function () {
+                                // When the checkbox changes, update the backend
+                                try {
+                                    const response = await fetch(`/api/fernandoMesser/tasks/${task.id}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ done: this.checked })
+                                    });
+
+                                    if (!response.ok) {
+                                        console.error('Error updating task');
+                                        // If the request failed, revert the checkbox
+                                        this.checked = !this.checked;
+                                    } else {
+                                        // If the request was successful, update the task row styling
+                                        row.classList.toggle("bg-gray-200", this.checked);
+                                        row.classList.toggle("line-through", this.checked);
+                                    }
+                                } catch (error) {
+                                    console.error(error);
+                                    // If the request failed, revert the checkbox
+                                    this.checked = !this.checked;
+                                }
+                            });
+                            doneCol.append(checkbox);
+                            row.append(doneCol);
+
+
+                            // Create the actions
+                            const actionsCol = document.createElement("td");
+                            actionsCol.classList.add("p-2", "text-center"); // Add p-2 class for padding, and text-center class for center alignment
+                            const removeButton = document.createElement("button");
+                            const trashIcon = document.createElement("i");
+                            trashIcon.classList.add("fas", "fa-trash-alt", "text-gray-500", "hover:text-black");
+                            removeButton.append(trashIcon);
+                            actionsCol.append(removeButton);
+
+                            removeButton.addEventListener("click", async function () {
+                                const confirm = window.confirm(`Are you sure you want to delete this task:\n${task.name}?`);
+
+                                //Choice is null if the user clicks cancel
+                                if (!confirm) {
+                                    return;
+                                }
+                                //Choice is true if the user clicks ok
+                                await fetch(`/api/fernandoMesser/tasks/${task.id}`, {
+                                    method: "DELETE"
+                                });
+                                row.remove();
+                            });
+
+                            row.append(actionsCol);
                         }
-                    }.bind(this)).catch(function (error) {
-                        console.error(error);
-                        // If the request failed, revert the checkbox
-                        this.checked = !this.checked;
-                    }.bind(this));
-                });
-                doneCol.append(checkbox);
-                row.append(doneCol);
 
-                // Create the actions
-                const actionCol = document.createElement("td");
-                const removeButton = document.createElement("button");
-                removeButton.append("remove");
-                actionCol.append(removeButton);
-                removeButton.addEventListener("click", async function () {
-                    const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
-                    if (!choice) {
-                        return;
-                    }
-                    // Go ahead and delete it.
-                    console.log("Delete task id: ", task.id);
-                    await fetch(`/api/fernandoMesser/tasks/${task.id}`, { method: 'DELETE' })
-                    row.remove();
-                });
-                row.append(actionCol);
-            }
+                        const clearButton = document.getElementById("clearButton");
+                        clearButton.addEventListener("click", clearAllTasks);
 
-            function fetchTasks() {
-                console.log("Fetching Tasks")
-                fetch("/api/fernandoMesser/tasks").then(function (response) {
-                    console.log(response)
-                    response.json().then(function (data) {
-                        console.log(data)
-                        for (let i = 0; i < data.length; i++) {
-                            const task = data[i]
-                            renderRow(task)
+                        async function clearAllTasks() {
+                            const confirmed = window.confirm("Are you sure you want to delete all tasks?");
+                            if (!confirmed) {
+                                return;
+                            }
+                            await fetch("/api/fernandoMesser/tasks", {
+                                method: "DELETE"
+                            });
+                            const tableBody = document.getElementById("taskTableBody");
+                            tableBody.innerHTML = "";
                         }
-                    })
-                })
 
-
-            }
-            const taskForm = document.getElementById("taskForm");
-            function createTask(task) {
-                fetch("/api/fernandoMesser/tasks", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(task)
-                })
-                    .then(function (response) {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            throw new Error('Error creating task');
+                        function fetchTasks() {
+                            console.log("Fetching Tasks")
+                            fetch("/api/fernandoMesser/tasks").then(function (response) {
+                                console.log(response)
+                                response.json().then(function (data) {
+                                    console.log(data)
+                                    for (let i = 0; i < data.length; i++) {
+                                        const task = data[i]
+                                        renderRow(task)
+                                    }
+                                })
+                            })
                         }
-                    })
-                    .then(function (data) {
-                        renderRow(data);
-                        document.getElementById("nameInput").value = "";
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
-            }
 
-            function handleFormSubmit(event) {
-                event.preventDefault();
+                        const taskForm = document.getElementById("taskForm");
+                        function createTask(task) {
+                            fetch("/api/fernandoMesser/tasks", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(task)
+                            })
+                                .then(function (response) {
+                                    if (response.ok) {
+                                        return response.json();
+                                    } else {
+                                        throw new Error('Error creating task');
+                                    }
+                                })
+                                .then(function (data) {
+                                    renderRow(data);
+                                    document.getElementById("nameInput").value = "";
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
+                                });
+                        }
 
-                const nameInput = document.getElementById("nameInput");
-                const taskName = nameInput.value.trim();
+                        function handleFormSubmit(event) {
+                            event.preventDefault();
 
-                if (taskName !== "") {
-                    const newTask = {
-                        id: generateUniqueId(), // Implement your own unique ID generation logic
-                        name: taskName,
-                        done: false
-                    };
+                            const nameInput = document.getElementById("nameInput");
+                            const taskName = nameInput.value.trim();
 
-                    createTask(newTask);
-                }
-            }
+                            if (taskName !== "") {
+                                const newTask = {
+                                    id: generateUniqueId(),
+                                    name: taskName,
+                                    done: false
+                                };
 
-            function generateUniqueId() {
-                // Implement your own unique ID generation logic
-                // You can use libraries like uuid or generate a timestamp-based ID
-                // For simplicity, let's use a timestamp-based ID here
-                return Date.now().toString();
-            }
+                                createTask(newTask);
+                            }
+                        }
 
-            taskForm.addEventListener("submit", handleFormSubmit);
+                        function generateUniqueId() {
+                            return Date.now().toString();
+                        }
 
-            fetchTasks()
-        </script>
-    </body>
+                        taskForm.addEventListener("submit", handleFormSubmit);
+
+                        fetchTasks();
+                    </script>
+        </body>
+
+
 
 </html>
