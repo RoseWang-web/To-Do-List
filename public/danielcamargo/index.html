@@ -28,7 +28,7 @@
                         <div
                             class="py-4 border border-gray-300 group flex flex-row items-center justify-between space-x-2">
                             <input type="checkbox" @change="toggleTaskDone(task)" :checked="task.done" />
-                            <div class="flex-grow cursor-pointer">
+                            <div class="flex-grow cursor-pointer bg-slate-100">
                                 <span x-show="!selectedTask || task.id !== selectedTask.id"
                                     @dblclick="selectTask($nextTick, task)" class="bg-red-200"
                                     :class="task.done ? 'line-through' : ''" x-text="task.name">
