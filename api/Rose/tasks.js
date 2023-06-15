@@ -32,4 +32,38 @@ router.get('/:id', function (req, res) {
     res.send(result);
 });
 
+router.delete('/:id', function (req, res) {
+    console.log("delete task by ID", req.params.id);
+    const result = tasks.findIndex(function (task) {
+        return task.id == req.params.id;
+    })
+    if (result=== -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // remove the tasks
+    tasks.splice(result,1);
+    res.status(204).send();
+});
+
+router.post('/', function(req, res) {
+  const { name, done } = req.body;
+
+  if (!name) {
+    res.status(400).send({ message: 'Task name is required.' });
+    return;
+  }
+
+  const newTask = {
+    id: tasks.length + 1,
+    name: name,
+    done: done || false
+  };
+
+  tasks.push(newTask);
+
+  res.status(201).send(newTask);
+});
+
+
 module.exports = router;

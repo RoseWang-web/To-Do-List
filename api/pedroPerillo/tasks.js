@@ -22,12 +22,47 @@ router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
     const result = tasks.filter((task) => task.id === id);
-    if (result.length === 0){
-        res.status(404).send({ message: "Not found"});
+    if (result.length === 0) {
+        res.status(404).send({ message: "Not found" });
         return;
     }
     // Return all tasks
     res.send(result[0]);
+});
+
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to delete a task");
+    const id = parseInt(req.params.id);
+    const filteredTasks = tasks.findIndex((task) => task.id === id);
+    if (filteredTasks.length === -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // Remove task
+    tasks.splice(filteredTasks, 1)
+    res.status(204).send();
+});
+
+router.post('/', function (req, res) {
+    console.log("Handling request to create a task");
+    const { name, done } = req.body;
+    // Input validation
+    if (!name || typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    const date = new Date();
+    const number = date.getTime();
+    // Create a new task object
+    const newTask = {
+        id: number,
+        name: name,
+        done: done
+    };
+
+    // Add the new task to the tasks array
+    tasks.push(newTask);
+    res.status(201).send(newTask);
 });
 
 module.exports = router;
