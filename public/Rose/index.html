@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
         <title>Rose Wang</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     </head>
 
     <body>
@@ -67,7 +69,7 @@
                 //create the remove column
                 const actionCol = document.createElement("td");
                 const removeButton = document.createElement("button");
-                removeButton.append("remove");
+                removeButton.append("remove1");
                 removeButton.addEventListener("click", async function () {
                     const choice = window.confirm(`Are you sure you want to delete\n: ${task.name}`);
                     if (!choice) {
@@ -150,4 +152,5 @@
             }
         </script>
     </body>
+
 </html>
