@@ -18,6 +18,12 @@ router.get('/', function (req, res) {
     res.send(tasks);
 });
 
+router.get('/wireframe/', function (req, res) {
+    console.log("Handling request to search tasks");
+    // Return all tasks
+    // res.send(tasks);
+});
+
 // GET /tasks/:id
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
