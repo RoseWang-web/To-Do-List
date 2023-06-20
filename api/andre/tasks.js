@@ -94,4 +94,11 @@ router.put('/:id', function(req, res) {
 
   res.send(task);
 });
+
+//DELETE /allTasks
+router.delete('/', function (req, res) {
+    console.log("Deleting all tasks");
+    tasks.splice(0, tasks.length);
+    res.status(204).send();
+});
 module.exports = router;
