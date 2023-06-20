@@ -11,27 +11,43 @@ const tasks = [
     { id: 4, name: "some name 4", done: false },
 ];
 
-// Search
 router.get('/', function (req, res) {
     console.log("Handling request to search tasks");
-    // Return all tasks
     res.send(tasks);
 });
-// /tasks/1
+
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((task) => task.id === id);
+    if (index === -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    const { done } = req.body;
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    tasks[index].done = done;
+    res.send(tasks[index]);
+});
+// Search
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const result = tasks.filter((task) => task.id === id);
-    if (result.length === 0) {
+    const filteredTasks = tasks.find((task) => task.id === id);
+    if (filteredTasks.length === 0) {
         res.status(404).send({ message: "Not found" });
         return;
     }
     // Return all tasks
-    res.send(result[0]);
+
+    res.send(filteredTasks);
 });
 
 router.delete('/:id', function (req, res) {
-    console.log("Handling request to delete a task");
+    console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
     const filteredTasks = tasks.findIndex((task) => task.id === id);
     if (filteredTasks.length === -1) {
@@ -45,7 +61,9 @@ router.delete('/:id', function (req, res) {
 
 router.post('/', function (req, res) {
     console.log("Handling request to create a task");
+
     const { name, done } = req.body;
+
     // Input validation
     if (!name || typeof done !== "boolean") {
         res.status(400).send({ message: "Invalid task data" });
@@ -55,13 +73,15 @@ router.post('/', function (req, res) {
     const number = date.getTime();
     // Create a new task object
     const newTask = {
-        id: number,
+
+        id: number, // Generate a unique ID based on the length of the tasks array
         name: name,
         done: done
     };
 
     // Add the new task to the tasks array
     tasks.push(newTask);
+
     res.status(201).send(newTask);
 });
 

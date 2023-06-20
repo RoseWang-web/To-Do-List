@@ -54,7 +54,7 @@
                 }
                 checkbox.addEventListener('change', function () {
                     // When the checkbox changes, update the backend
-                    fetch(`/api/fernandoMesser/tasks/${task.id}`, {
+                    fetch(`/api/pedroPerillo/tasks/${task.id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -87,7 +87,7 @@
                     }
                     // Go ahead and delete it.
                     console.log("Delete task id: ", task.id);
-                    await fetch(`/api/fernandoMesser/tasks/${task.id}`, { method: 'DELETE' })
+                    await fetch(`/api/pedroPerillo/tasks/${task.id}`, { method: 'DELETE' })
                     row.remove();
                 });
                 row.append(actionCol);
@@ -95,7 +95,7 @@
 
             function fetchTasks() {
                 console.log("Fetching Tasks")
-                fetch("/api/fernandoMesser/tasks").then(function (response) {
+                fetch("/api/pedroPerillo/tasks").then(function (response) {
                     console.log(response)
                     response.json().then(function (data) {
                         console.log(data)
@@ -110,7 +110,7 @@
             }
             const taskForm = document.getElementById("taskForm");
             function createTask(task) {
-                fetch("/api/fernandoMesser/tasks", {
+                fetch("/api/pedroPerillo/tasks", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -141,7 +141,7 @@
 
                 if (taskName !== "") {
                     const newTask = {
-
+                        id: generateUniqueId(), // Implement your own unique ID generation logic
                         name: taskName,
                         done: false
                     };
@@ -150,7 +150,12 @@
                 }
             }
 
-
+            function generateUniqueId() {
+                // Implement your own unique ID generation logic
+                // You can use libraries like uuid or generate a timestamp-based ID
+                // For simplicity, let's use a timestamp-based ID here
+                return Date.now().toString();
+            }
 
             taskForm.addEventListener("submit", handleFormSubmit);
 
