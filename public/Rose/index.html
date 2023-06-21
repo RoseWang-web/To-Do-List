@@ -1,90 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>Rose Wang</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+    <head>
+        <title>Rose Wang</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    </head>
 
-<body>
-    <h1>To-Do App</h1>
-    
-    <table border="1" id="taskTable">
+    <body class="bg-orange-100 p-6">
+        <a href="/" class="text-blue-500 hover:text-4xl">Back</a>
+        <center>
+            <h1 class="text-4xl font-bold mt-4">
+                To-Do App</h1>
+        </center>
 
-<thead> 
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Done</th>
-<th>Actions</th>
-<th>Subject</th>
-</tr>
-</thead>
+        <div class="container py-4">
+            <p>Enter the ID you want to search:</p>
+            <input id="IDInput" type="text" name="ID" placeholder="Enter ID" value=""
+                class="px-4 py-2 border border-gray-300 rounded-md outline-none focus:ring-orange-500 focus:border-gray-300 focus:outline-none" />
+            <button id="searchIDButton" onclick="searchById()"
+                class="px-4 py-2 ml-2 text-white bg-orange-400 rounded-lg hover:bg-orange-600">Search by ID</button>
+        </div>
+        <div>
+            <p>Add task:</p>
+            <input id="newTaskName" type="text" name="TaskName" placeholder="Enter task name 2" value=""
+                class="px-4 py-2 border border-gray-300 rounded-md outline-none focus:ring-orange-500 focus:border-gray-300 focus:outline-none" />
+            <button id="addTaskButton" onclick="addTask()"
+                class="px-4 py-2 ml-2 text-white bg-orange-400 rounded-lg hover:bg-orange-600">Add Task</button>
+        </div>
+        <table class="min-w-full border border-gray-300">
+            <thead>
+                <tr class="bg-red-200 px-10 py-1">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Done</th>
+                    <th>Actions</th>
 
-<tbody id="taskTableBody">
+                </tr>
+            </thead>
+            <tbody id="taskTableBody">
+            </tbody>
+        </table>
 
-    <script>
-       console.log("Hello World");
-        async function fetchAllTasks(){
-            const response = await fetch("/api/rose/tasks");
-            const tasks= await response.json();
-            console.log("Number of tasks found: ", tasks.lenth);
-            return tasks;
-        }
-        function renderRow(tableBodyElement, task){
-            console.log("Task", task);
-            const row = document.createElement("tr");
-            tableBodyElement.append(row);
-            //create the ID column
-            const idCol = document.createElement("td");
-            idCol.append(task.id);
-            row.append(idCol);
-            //create the name column
-            const nameCol = document.createElement("td");
-            nameCol.append(task.name);
-            row.append(nameCol);
-            //create the Done column
-            const doneCol = document.createElement("td");
-            const checkbox = document.createElement("input");
-            checkbox.setAttribute("type", "checkbox");
-            if (task.done){
-                checkbox.setAttribute("checked","");
+        <script>
+            async function fetchAllTasks() {
+                const response = await fetch("/api/rose/tasks");
+                const tasks = await response.json();
+                return tasks;
             }
-            doneCol.append(checkbox);
-            row.append(doneCol);
-             const actionCol = document.createElement("td");
-             const removeButton=document.createElement("button");
-             removeButton.append("remove");
-             actionCol.append(removeButton);
-             removeButton.addEventListener("click", function(){
-                const choice = window.confirm(`Are you sure you want to delete\n: ${task.name}`);
-                if(!choice){
+
+            function renderRow(tableBodyElement, task) {
+                console.log("Task", task);
+                const row = document.createElement("tr");
+                tableBodyElement.append(row);
+
+                //create the ID column
+                const idCol = document.createElement("td");
+                idCol.append(task.id);
+                row.append(idCol);
+
+                //create the name column
+                const nameCol = document.createElement("td");
+                nameCol.append(task.name);
+                row.append(nameCol);
+
+                //create the Done column
+                const doneCol = document.createElement("td");
+                const checkbox = document.createElement("input");
+                checkbox.setAttribute("type", "checkbox");
+                if (task.done) {
+                    checkbox.setAttribute("checked", "");
+                }
+                doneCol.append(checkbox);
+                row.append(doneCol);
+
+                //create the remove column
+                const actionCol = document.createElement("td");
+                const removeButton = document.createElement("button");
+                removeButton.append("remove");
+                removeButton.addEventListener("click", async function () {
+                    const choice = window.confirm(`Are you sure you want to delete\n: ${task.name}`);
+                    if (!choice) {
+                        return;
+                    }
+
+                    //Go ahead and delete the task.
+                    console.log("delete ID", task.id);
+                    await fetch(`/api/rose/tasks/${task.id}`, { method: 'DELETE' })
+                    row.remove();
+                })
+                actionCol.append(removeButton);
+                row.append(actionCol);
+
+
+            }
+
+            async function renderTable() {
+                const tasks = await fetchAllTasks();
+                const tableBody = document.getElementById("taskTableBody");
+                for (let i = 0; i < tasks.length; i++) {
+                    const task = tasks[i];
+                    renderRow(tableBody, task);
+                }
+            }
+            //call the function
+            renderTable();
+
+            async function showById(id) {
+                const tasks = await fetchAllTasks();
+                const tableBody = document.getElementById("taskTableBody");
+                const task = tasks[id - 1];
+                var result = "Task ID: " + task.id + "\n" +
+                    "Task Name: " + task.name + "\n" +
+                    "Task Done: " + task.done;
+                confirm(result);
+            }
+
+            function searchById() {
+                const idInput = document.getElementById("IDInput");
+                console.log("Input: ", idInput, idInput.value);
+                showById(idInput.value);
+            }
+
+            async function addTask() {
+                const nameInput = document.getElementById("newTaskName");
+                const name = nameInput.value;
+
+                if (name.trim() === "") {
+                    alert("Please enter a task name.");
                     return;
                 }
-             
-                //Go ahead and delete the task.
-                console.log("delete ID",task.id);
-             })
-            row.append(actionCol);
-        }
-        async function renderTable(){
-            const tasks = await fetchAllTasks();
-            const tableBody=document.getElementById("taskTableBody");
-            for (let i=0;i<tasks.length;i++){
-                const task = tasks[i];
-                renderRow(tableBody,task);
+
+                // Send a POST request to the server/API to add the task
+                const response = await fetch("/api/rose/tasks", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(task)
+                });
+
+                if (response.ok) {
+                    // Task added successfully
+                    const newTask = await response.json();
+                    const tableBody = document.getElementById("taskTableBody");
+                    renderRow(tableBody, newTask); // Render the new task in the table
+                    nameInput.value = ""; // Clear the input field
+                } else {
+                    // Error occurred while adding the task
+                    alert("Failed to add the task. Please try again.");
+                }
             }
-        }
-//call the function
-renderTable();
-
-    </script>
-
-</tbody>
-
-    </table>
-    
-</body>
+        </script>
+    </body>
 
 </html>

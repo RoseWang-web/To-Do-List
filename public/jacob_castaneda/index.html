@@ -2,91 +2,141 @@
 <html lang="en">
 
     <head>
-        <title>Daniel Camargo - To-Do App</title>
+        <title>Jacob Castaneda- To do list </title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     </head>
 
-    <body>
-        <a href="/">Back</a>
-        <h1>To-Do App</h1>
-        <form id="taskForm">
-            <label for="nameInput">Name</label>
-            <input id="nameInput" type="text" name="name" />
-            <button id="addButton">Add</button>
-            <button id="clearButton" type="button">Clear</button>
-        </form>
+  <style>
+body {
+     
+    background-image: url( "https://images.pexels.com/photos/1261728/pexels-photo-1261728.jpeg");
+     background-size: cover;
+    background-position: center;
+   }
+ .back-icon{
+   position: fixed;
+   top:20px;
+   left: 20px;
+   z-index: 9999;
+ }
+  </style>
+        
+          <div x-data="todoApp()" class="p-6 max-w-xl mx-auto">
+            <a href="/" class ="back-icon">
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+       <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-4.28 9.22a.75.75 0 000 1.06l3 3a.75.75 0 101.06-1.06l-1.72-1.72h5.69a.75.75 0 000-1.5h-5.69l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3z" clip-rule="evenodd" />
+           </svg> 
 
-        <table border="1" id="taskTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Done</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="taskTableBody"></tbody>
-        </table>
+            </a>
+            <h1>To-Do List</h1>
+            <form id="taskForm" @submit.prevent="createTask">
+                <label for="nameInput">Name</label>
+                <input id="nameInput" x-model="taskName" type="text" name="taskName" />
+                <button id="addButton" class="rounded-full bg-blue-500 text-white px-4 py-2">Add</button>
+
+                <button x-show="hasDoneTasks" id="clearButton" type="button" @click="clearDoneTasks" class="rounded-full bg-red-500 text-white px-4 py-2">Clear
+                    All</button>
+            </form>
+            <ul class="space-y-2">
+                <template x-for="task in tasks" :key="task.id">
+                    <li>
+                        <div
+                            class="py-4 border border-gray-300 group flex flex-row items-center justify-between space-x-2">
+                            <input type="checkbox" @change="updateTaskStatus(task)" :checked="task.done" />
+                            <span class="flex-grow bg-red-200" x-text="task.name">Name of the task</span>
+                            <button class="hidden group-hover:block" @click="deleteTask(task)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                            </button>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </div>
 
         <script>
-            console.log("Hello World");
-            async function fetchAllTasks() {
-                const response = await fetch("/api/danielcamargo/tasks");
-                const tasks = await response.json();
-                console.log("Number of tasks found: ", tasks.length);
-                return tasks;
-            }
+            window.todoApp = function () {
+                return {
+                    // This is called when the component is built
+                    async init() {
+                        const response = await fetch("/api/jacob_castaneda/tasks");
+                        this.tasks = await response.json();
+                        this.hasDone = this.tasks.filter(t => t.done).length > 0;
+                    },
+                    // Data
+                    tasks: [],
+                    taskName: null,
+                    hasDone: false,
+                    // Computed
+                    get hasDoneTasks() {
+                        return this.tasks.filter(i => i.done).length > 0;
+                    },
+                    // Some of my actions (behavior)
+                    async createTask() {
+                        const response = await fetch("/api/jacob_castaneda/tasks", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: this.taskName
+                            })
+                        });
+                        const task = await response.json();
+                        this.tasks.push(task);
+                        this.taskName = null;
+                    },
+                    async clearDoneTasks() {
+                        if (!confirm('Are you sure?')) {
+                            return;
+                        }
 
-            function renderRow(tableBodyElement, task) {
-                console.log("Task: ", task);
-                const row = document.createElement("tr");
-                tableBodyElement.append(row);
-                // Create the ID column
-                const idCol = document.createElement("td");
-                idCol.append(task.id);
-                row.append(idCol);
-                // Create the Name column
-                const nameCol = document.createElement("td");
-                nameCol.append(task.name);
-                row.append(nameCol);
-                // Create the Done column
-                const doneCol = document.createElement("td");
-                const checkbox = document.createElement("input");
-                checkbox.setAttribute("type", "checkbox");
-                if (task.done) {
-                    checkbox.setAttribute("checked", "");
-                }
-                doneCol.append(checkbox);
-                row.append(doneCol);
-                // Create the actions
-                const actionCol = document.createElement("td");
-                const removeButton = document.createElement("button");
-                removeButton.append("remove");
-                actionCol.append(removeButton);
-                removeButton.addEventListener("click", function () {
-                    const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
-                    if (!choice) {
-                        return;
+                        const tasksToDelete = this.tasks.filter(t => t.done);
+                        for (const task of tasksToDelete) {
+                            await this.deleteTask(task, true);
+                        }
+                    },
+                    async deleteTask(task, confirmed = false) {
+                        if (!confirmed) {
+                            if (!confirm('Are you sure?')) {
+                                return;
+                            }
+                        }
+
+                        const response = await fetch(`/api/jacob_castaneda/tasks/${task.id}`, {
+                            method: 'DELETE'
+                        });
+                        const index = this.tasks.findIndex(t => t.id === task.id);
+                        if (index === -1) {
+                            return;
+                        }
+                        this.tasks.splice(index, 1);
+                        this.hasDone = this.tasks.filter(t => t.done).length > 0;
+                    },
+                    async updateTaskStatus(task) {
+                        const response = await fetch(`/api/jacob_castaneda/tasks/${task.id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: task.name,
+                                done: !task.done
+                            })
+                        });
+                        // Update the UI
+                        task.done = !task.done;
+                        this.hasDone = this.tasks.filter(t => t.done).length > 0;
                     }
-                    // Go ahead and delete it.
-                    console.log("Delete task id: ", task.id);
-                });
-                row.append(actionCol);
+                };
             }
-
-            async function renderTable() {
-                const tasks = await fetchAllTasks();
-                const tableBody = document.getElementById("taskTableBody");
-                for (let i = 0; i < tasks.length; i++) {
-                    const task = tasks[i];
-                    // render the row
-                    renderRow(tableBody, task);
-                }
-            }
-            // Call the function
-            renderTable()
         </script>
+        <script src="//unpkg.com/alpinejs"></script>
     </body>
 
 </html>

@@ -1,34 +1,102 @@
-// Based one:
-// https://expressjs.com/en/guide/routing.html
+// tasks.js
+
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
 
 /** @type{{id: number, name: string, done: boolean}[]} */
-const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
-    { id: 5, name: "some name 5", done: true },
-];
+let tasks = [];
 
-// Search
+function saveTasksToFile() {
+    fs.writeFileSync('tasks.json', JSON.stringify(tasks));
+}
+
+function loadTasksFromFile() {
+    if (!fs.existsSync('tasks.json')) {
+        return;
+    }
+    const json = fs.readFileSync('tasks.json');
+    tasks = JSON.parse(json);
+}
+
+loadTasksFromFile();
+
+// GET /tasks
 router.get('/', function (req, res) {
     console.log("Handling request to search tasks");
-    // Return all tasks
     res.send(tasks);
 });
-// /tasks/1
+
+// Update a task
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
+    const id = parseInt(req.params.id);
+    const task = tasks.find((tasks) => tasks.id === id);
+    if (!task) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+
+    const { name, done } = req.body;
+    if (!name || !name.trim()) {
+        res.status(400).send({ message: "Task must have a name" });
+        return;
+    }
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+
+    task.done = done;
+    task.name = name;
+    saveTasksToFile(tasks);
+    res.send(task);
+});
+
+// Find a task
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const result = tasks.filter((task) => task.id === id);
-    if (result.length === 0){
-        res.status(404).send({ message: "Not found"});
+    const result = tasks.find((tasks) => tasks.id === id);
+    if (!result) {
+        res.status(404).send({ message: "Not found" });
         return;
     }
-    // Return all tasks
     res.send(result[0]);
+});
+
+// Create task
+router.post('/', function (req, res) {
+    console.log("Creating task");
+    const task = req.body;
+    if (!task.name) {
+        res.status(400).send({ message: "Task must have a name" });
+        return;
+    }
+
+    // Add the task
+    const newTask = {
+        id: new Date().getTime(),
+        name: task.name,
+        done: false,
+    };
+    tasks.push(newTask);
+    saveTasksToFile(tasks);
+    res.status(201).send(newTask);
+});
+
+// Delete task
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to delete a task");
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((tasks) => tasks.id === id);
+    if (index === -1) {
+        res.status(404).send({ message: "Task not found" });
+        return;
+    }
+    tasks.splice(index, 1);
+    saveTasksToFile(tasks);
+    res.status(204).send();
 });
 
 module.exports = router;

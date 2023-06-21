@@ -86,4 +86,10 @@ router.post('/', function (req, res) {
     res.status(201).send(newTask);
 });
 
+router.delete('/', function (req, res) {
+    console.log("Deleting all tasks");
+    tasks.splice(0, tasks.length);
+    res.status(204).send();
+});
+
 module.exports = router;
