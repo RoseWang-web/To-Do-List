@@ -9,90 +9,79 @@
 </head>
 
 <body class=" bg-gradient-to-b from-blue-50 to-blue-200 flex justify-center items-center h-screen">
-<div class="bg-white rounded-lg shadow-lg p-10">
 
-    <a class="text-gray-400" href="/">Back</a>
+<div>
+    <div class="flex items-center justify-between mb-4">
+        <h1>
+            <a class="text-gray-400" href="/">Back</a>
+            <span class="text-gray-400 font-light mx-2">\</span>
+            <span id="pageName" onload="displayURI();"></span>
+        </h1>
 
-    <div class="px-4 sm:px-6 lg:px-8 mt-4">
-        <div class="sm:flex sm:items-center">
-            <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold leading-6 text-gray-900 mb-4">To Do App</h1>
-                <form class="flex justify-center" id="taskForm">
-                    <!--                    <input class="bg-gradient-to-b from-blue-50 to-blue-200 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"-->
-                    <!--                           placeholder="Enter your task">-->
-                    <!--                    <button class="bg-orange-500 px-5 rounded-e-full" onclick="addNewTask()" type="button">+</button>-->
-                    <!--                    <button id="clearButton" type="button">Clear</button>-->
-                    <div>
-                        <label for="nameInput" class="block text-sm font-medium leading-6 text-gray-900 mt-2">Enter a new
-                            task</label>
-                        <div class="mt-2 flex rounded-md shadow-sm">
-                            <div class="relative flex flex-grow items-stretch focus-within:z-10">
-                                <!--                                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">-->
-                                <!--                                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"-->
-                                <!--                                         aria-hidden="true">-->
-                                <!--                                        <path-->
-                                <!--                                            d="M7 8a3 3 0 100-6 3 3 0 000 6zM14.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM1.615 16.428a1.224 1.224 0 01-.569-1.175 6.002 6.002 0 0111.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 017 18a9.953 9.953 0 01-5.385-1.572zM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 00-1.588-3.755 4.502 4.502 0 015.874 2.636.818.818 0 01-.36.98A7.465 7.465 0 0114.5 16z"/>-->
-                                <!--                                    </svg>-->
-                                <!--                                </div>-->
-                                <input type="text" name="nameInput"  id="nameInput"
-                                       class="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                       placeholder="e.g. Do Homework">
+        <a href="/danbs/wireframe" type="button"
+           class="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Check Wireframe Test
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/>
+            </svg>
+        </a>
+    </div>
+    <div class="bg-white rounded-lg shadow-lg pt-5 pb-10 px-10">
+        <div class="px-4 sm:px-6 lg:px-8 mt-4">
+            <h1 class="text-base font-semibold leading-6 text-gray-900 mb-4 text-center">To Do App</h1>
+            <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+
+                    <form class="flex justify-center" id="taskForm">
+                        <div>
+                            <label for="nameInput" class="block text-sm font-medium leading-6 text-gray-900 mt-2">Enter
+                                a new
+                                task</label>
+                            <div class="mt-2 flex rounded-md shadow-sm">
+                                <div class="relative flex flex-grow items-stretch focus-within:z-10">
+                                    <input onkeydown="newTaskValidation(this)" type="text" name="nameInput"
+                                           id="nameInput"
+                                           class="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                           placeholder="e.g. Do Homework">
+                                </div>
+                                <button id="addButton" type="button"
+                                        class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                        disabled>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M12 4.5v15m7.5-7.5h-15"/>
+                                    </svg>
+                                    Add
+                                </button>
                             </div>
-                            <button id="addButton" type="button"
-                                    class="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                                </svg>
-
-                                Add
-                            </button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <div class="mt-10 sm:ml-16  sm:flex-none ">
+                    <button id="clearButton" type="button"
+                            class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Clear
+                    </button>
+                </div>
             </div>
-            <div class="mt-20 sm:ml-16  sm:flex-none ">
-                <button id="clearButton" type="button"
-                        class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    Clear
-                </button>
-            </div>
-        </div>
-        <div class="mt-8 flow-root">
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-300" id="taskTable">
-                            <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col"
-                                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id
-                                </th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name
-                                </th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role
-                                </th>
-                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                    <span class="sr-only">Edit</span>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 bg-white" id="taskTableBody">
-                            <!--                            <tr>-->
-                            <!--                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Lindsay Walton</td>-->
-                            <!--                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Front-end Developer</td>-->
-                            <!--                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">lindsay.walton@example.com</td>-->
-                            <!--                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Member</td>-->
-                            <!--                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">-->
-                            <!--                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, Lindsay Walton</span></a>-->
-                            <!--                                </td>-->
-                            <!--                            </tr>-->
-
-                            <!-- More people... -->
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="mt-8 flow-root">
+                <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <!--                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">-->
+                    <!--                    <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">-->
+                    <table class="min-w-full divide-y divide-gray-300" id="taskTable">
+                        <thead>
+                        <tr>
+                            <th scope="col" colspan="3"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Check on a task after
+                                completion
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class=" bg-white" id="taskTableBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -106,24 +95,33 @@
         return data;
     }
 
+    window.onload = function displayURI() {
+        let uri = window.location.pathname.split('/');
+        // console.log(uri[1], this);
+        document.getElementById('pageName').prepend(uri[1]);
+    }
+
+    function newTaskValidation(input) {
+        // console.log(input);
+        document.getElementById('addButton').disabled = !input.value;
+    }
+
     function renderRow(tableBodyElement, task) {
         const row = document.createElement("tr");
+        row.classList.add("even:bg-gray-50")
         tableBodyElement.append(row);
 
-        //Create the ID column
-        const idCol = document.createElement("td");
-        idCol.className = "whitespace-nowrap px-3 py-4 text-sm text-gray-500";
-        idCol.append(task.id);
-        row.append(idCol);
-
-        //Create the name column
-        const nameCol = document.createElement("td");
-        nameCol.append(task.name);
-        row.append(nameCol);
+        // //Create the ID column
+        // const idCol = document.createElement("td");
+        // idCol.className = "whitespace-nowrap px-3 py-4 text-sm text-gray-500";
+        // idCol.append(task.id);
+        // row.append(idCol);
 
         //Create the done column
         const doneCol = document.createElement("td");
+        doneCol.classList.add("relative", "whitespace-nowrap", "py-4", "pl-3", "pr-4", "text-right", "text-sm", "font-medium", "sm:pr-3", "w-1");
         const checkbox = document.createElement("input");
+        checkbox.setAttribute("id", "task_" + task.id)
         checkbox.setAttribute("type", "checkbox");
 
         if (task.done) {
@@ -133,10 +131,36 @@
         doneCol.append(checkbox);
         row.append(doneCol);
 
+        //Create the name column
+        const nameCol = document.createElement("td");
+        const rowLabel = document.createElement("label");
+        rowLabel.setAttribute("for", "task_" + task.id);
+        rowLabel.append(task.name);
+        nameCol.append(rowLabel);
+        row.append(nameCol);
+
+
         //Create actions
         const actionsCol = document.createElement("td");
-        const removeButton = document.createElement("button");
-        removeButton.append("Remove");
+        const removeButton = document.createElement("div");
+        removeButton.classList.add("inline-flex", "items-center", "rounded-md", "bg-red-100", "px-1.5", "py-0.5", "text-xs", "font-medium", "text-red-700");
+
+        const svgns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(svgns, 'svg');
+        svg.setAttribute("fill", "none");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("stroke-width", "1.5");
+        svg.setAttribute("stroke", "currentColor");
+        svg.setAttribute("className", "w-6 h-6");
+        removeButton.append(svg);
+        removeButton.classList.add("w-7", "cursor-pointer")
+
+        var path = document.createElementNS(svgns, 'path');
+        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("stroke-linejoin", "round");
+        path.setAttribute('d', 'M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'); //Set path's data
+        svg.appendChild(path);
+
         actionsCol.append(removeButton);
 
         removeButton.addEventListener("click", async function () {
@@ -242,7 +266,6 @@
             console.error("Error updating task:", error);
         }
     }
-
 
 
     // Add event listener to the table

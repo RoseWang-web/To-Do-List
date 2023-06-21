@@ -11,7 +11,7 @@
 .DS_Store
 # Node JS
 node_modules
-
+.vscode/settings.json
 # Project specific
 dist
 tasks.json

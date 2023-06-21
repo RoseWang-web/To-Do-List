@@ -18,7 +18,8 @@
         <input class="bg-teal-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"
           placeholder="Enter your task">
         <button class="bg-teal-500 px-5 rounded-e-full" type="submit">+</button>
-        <button class ="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" id="clearButton" type="button">Clear All Tasks</button>
+        <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" id="clearButton"
+          type="button">Clear All Tasks</button>
       </form>
 
       <table class="mt-4 mx-auto text-center" id="taskTable">
@@ -42,7 +43,7 @@
 
         function renderRow(tableBodyElement, task) {
           const row = document.createElement("tr");
-            row.classList.add("text-center", "p-10"); // Add py-4 class for vertical padding
+          row.classList.add("text-center", "p-10"); // Add py-4 class for vertical padding
           tableBodyElement.append(row);
 
           //Create the ID column
@@ -55,7 +56,7 @@
           const nameText = document.createElement("span");
           nameText.textContent = task.name;
           nameCol.appendChild(nameText);
-         row.appendChild(nameCol);
+          row.appendChild(nameCol);
 
           //Create the done column
           const doneCol = document.createElement("td");
@@ -71,32 +72,32 @@
 
           // Add event listener to make the task name editable
           nameCol.addEventListener("click", function () {
-          const input = document.createElement("input");
-          input.type = "text";
-         input.value = task.name;
-         input.classList.add("border", "rounded", "p-1");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = task.name;
+            input.classList.add("border", "rounded", "p-1");
 
-         input.addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-             const updatedName = input.value.trim();
-             if (updatedName !== "") {
-                task.name = updatedName;
-               nameText.textContent = updatedName;
-               // Perform an update request to the server
-                updateTask(task);
-              } else {
-                // Revert to the original name if it's empty
-               input.value = task.name;
-             }
-              input.replaceWith(nameText); // Replace the input with the span element
-              
-             }
-         });
+            input.addEventListener("keyup", function (event) {
+              if (event.key === "Enter") {
+                const updatedName = input.value.trim();
+                if (updatedName !== "") {
+                  task.name = updatedName;
+                  nameText.textContent = updatedName;
+                  // Perform an update request to the server
+                  updateTask(task);
+                } else {
+                  // Revert to the original name if it's empty
+                  input.value = task.name;
+                }
+                input.replaceWith(nameText); // Replace the input with the span element
 
-         nameCol.replaceWith(input); // Replace the span with the input field
-         input.focus(); // Set focus to the input field
+              }
+            });
 
-       });
+            nameCol.replaceWith(input); // Replace the span with the input field
+            input.focus(); // Set focus to the input field
+
+          });
 
           //Create actions
           const actionsCol = document.createElement("td");
