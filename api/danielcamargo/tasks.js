@@ -123,14 +123,18 @@ router.delete('/:id', async function (req, res) {
 
 // Create tasks table if needed
 (async function () {
-    const sql = `
+    try {
+        const sql = `
     CREATE TABLE IF NOT EXISTS tasks(
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255),
         done BOOLEAN
     );
 `;
-    await mysqlQuery(sql);
+        await mysqlQuery(sql);
+    } catch (error) {
+        console.log("Database not up")
+    }
 })();
 
 
