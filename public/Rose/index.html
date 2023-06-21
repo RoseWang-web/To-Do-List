@@ -170,7 +170,7 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(task)
+                        body: JSON.stringify({ name: name })
                     });
 
                     if (response.ok) {
