@@ -5,17 +5,17 @@ const router = express.Router();
 
 /** @type{{id: number, name: string, done: boolean}[]} */
 const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
+    { id: 1, name: "Math test", done: false },
+    { id: 2, name: "Lab 8a", done: false },
+    { id: 3, name: "Java readings", done: false },
+    { id: 4, name: "CSS", done: false },
 ];
-
+// GET tasks
 router.get('/', function (req, res) {
     console.log("Handling request to search tasks");
     res.send(tasks);
 });
-
+//PUT tasks id:
 router.put('/:id', function (req, res) {
     console.log("Handling request to update a task");
     const id = parseInt(req.params.id);
@@ -32,7 +32,7 @@ router.put('/:id', function (req, res) {
     tasks[index].done = done;
     res.send(tasks[index]);
 });
-// Search
+// GET by id
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
@@ -45,7 +45,7 @@ router.get('/:id', function (req, res) {
 
     res.send(filteredTasks);
 });
-
+//Delete
 router.delete('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
@@ -58,7 +58,7 @@ router.delete('/:id', function (req, res) {
     tasks.splice(filteredTasks, 1)
     res.status(204).send();
 });
-
+// POST
 router.post('/', function (req, res) {
     console.log("Handling request to create a task");
 
