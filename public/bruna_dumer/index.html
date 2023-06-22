@@ -18,8 +18,8 @@
           <input class="bg-teal-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"
             placeholder="Enter your task">
           <button class="bg-teal-500 px-5 rounded-e-full" type="submit">+</button>
-          <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" id="clearButton"
-            type="button">Clear All Tasks</button>
+          <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500 hidden md:block"
+            id="clearButton" type="button">Clear All Tasks</button>
         </form>
       </div>
 
@@ -33,7 +33,10 @@
           </tr>
         </tbody>
       </table>
-
+      <div class="flex flex-col items-center justify-center">
+        <button class="bg-red-600 text-white text-xl m-5 p-2 rounded-full hover:bg-red-500 md:hidden"
+          id="clearButtonMobile" type="button">Clear All Tasks</button>
+      </div>
       <script>
         console.log("Hello World!");
         async function fetchAllTasks() {
@@ -146,6 +149,10 @@
         const clearButton = document.getElementById("clearButton");
         clearButton.addEventListener("click", clearAllTasks);
 
+        const clearButtonMobile = document.getElementById("clearButtonMobile");
+        clearButtonMobile.addEventListener("click", clearAllTasks);
+
+
         //Clear all tasks
         async function clearAllTasks() {
           const confirmed = window.confirm("Are you sure you want to delete all tasks?");
@@ -157,7 +164,14 @@
           });
           const tableBody = document.getElementById("taskTableBody");
           tableBody.innerHTML = "";
+
+          const clearButton = document.getElementById("clearButton");
+          clearButton.style.display = "none"; // Hide the main delete button
+
+          const clearButtonMobile = document.getElementById("clearButtonMobile");
+          clearButtonMobile.style.display = "none"; // Hide the mobile delete button
         }
+
 
         //Post a task
         async function postTask(event) {
@@ -203,7 +217,9 @@
           }
         }
       </script>
+
     </div>
+
   </body>
 
 </html>
