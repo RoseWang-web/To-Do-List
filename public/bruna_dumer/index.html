@@ -6,32 +6,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   </head>
 
   <body class="bg-orange-300 flex justify-center items-center h-screen">
     <div class="bg-white rounded-lg shadow-lg p-10">
 
       <a class="text-gray-400" href="/">Back</a>
-      <h1 class="text-5xl text-center uppercase font-bold m-5">To Do App</h1>
+      <h1 class="text-teal-700 text-5xl text-center uppercase font-bold m-5">To Do App</h1>
       <form class="flex justify-center" id="taskForm">
-        <input class="bg-orange-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"
+        <input class="bg-teal-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"
           placeholder="Enter your task">
-        <button class="bg-orange-500 px-5 rounded-e-full" id="addButton" type="button">+</button>
-        <button id="clearButton" type="button">Clear All Tasks</button>
+        <button class="bg-teal-500 px-5 rounded-e-full" type="submit">+</button>
+        <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" id="clearButton"
+          type="button">Clear All Tasks</button>
       </form>
 
-      <table id="taskTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Done</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
+      <table class="mt-4 mx-auto text-center" id="taskTable">
         <tbody id="taskTableBody">
-
+          <tr class="text-gray-400">
+            <th class="px-4">#</th>
+            <th class="px-4">Name</th>
+            <th class="px-4">Done</th>
+            <th class="px-4">Remove</th>
+          </tr>
         </tbody>
       </table>
 
@@ -45,6 +43,7 @@
 
         function renderRow(tableBodyElement, task) {
           const row = document.createElement("tr");
+          row.classList.add("text-center", "p-10"); // Add py-4 class for vertical padding
           tableBodyElement.append(row);
 
           //Create the ID column
@@ -54,8 +53,10 @@
 
           //Create the name column
           const nameCol = document.createElement("td");
-          nameCol.append(task.name);
-          row.append(nameCol);
+          const nameText = document.createElement("span");
+          nameText.textContent = task.name;
+          nameCol.appendChild(nameText);
+          row.appendChild(nameCol);
 
           //Create the done column
           const doneCol = document.createElement("td");
@@ -69,10 +70,42 @@
           doneCol.append(checkbox);
           row.append(doneCol);
 
+          // Add event listener to make the task name editable
+          nameCol.addEventListener("click", function () {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = task.name;
+            input.classList.add("border", "rounded", "p-1");
+
+            input.addEventListener("keyup", function (event) {
+              if (event.key === "Enter") {
+                const updatedName = input.value.trim();
+                if (updatedName !== "") {
+                  task.name = updatedName;
+                  nameText.textContent = updatedName;
+                  // Perform an update request to the server
+                  updateTask(task);
+                } else {
+                  // Revert to the original name if it's empty
+                  input.value = task.name;
+                }
+                input.replaceWith(nameText); // Replace the input with the span element
+
+              }
+            });
+
+            nameCol.replaceWith(input); // Replace the span with the input field
+            input.focus(); // Set focus to the input field
+
+          });
+
           //Create actions
           const actionsCol = document.createElement("td");
+          actionsCol.classList.add("p-2", "text-center"); // Add p-2 class for padding, and text-center class for center alignment
           const removeButton = document.createElement("button");
-          removeButton.append("Remove");
+          const trashIcon = document.createElement("i");
+          trashIcon.classList.add("fas", "fa-trash-alt", "text-gray-500", "hover:text-black");
+          removeButton.append(trashIcon);
           actionsCol.append(removeButton);
 
           removeButton.addEventListener("click", async function () {
@@ -108,8 +141,8 @@
         }
 
         //Add event listeners
-        const addButton = document.getElementById("addButton");
-        addButton.addEventListener("click", postTask);
+        const taskForm = document.getElementById("taskForm");
+        taskForm.addEventListener("submit", postTask);
 
         const clearButton = document.getElementById("clearButton");
         clearButton.addEventListener("click", clearAllTasks);
@@ -143,10 +176,7 @@
           });
 
           const task = await response.json();
-          const tableBody = document.getElementById("taskTableBody");
           renderRow(tableBody, task);
-          nameInput.value = "";
-
         }
 
         // Update a task
@@ -178,8 +208,6 @@
             console.error("Error updating task:", error);
           }
         }
-
-
 
         // Add event listener to the table
         const taskTable = document.getElementById("taskTable");
