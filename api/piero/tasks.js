@@ -2,6 +2,8 @@
 // https://expressjs.com/en/guide/routing.html
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const mysqlQuery = require('./db');
 
 /** @type{{id: number, name: string, done: boolean}[]} */
 const tasks = [
@@ -46,7 +48,7 @@ router.delete('/:id', function (req, res) {
     res.status(204).send();
 });
 
-  router.post('/', function (req, res) {
+router.post('/', function (req, res) {
     console.log("Handling request to create a task");
 
     const { name, done } = req.body;
