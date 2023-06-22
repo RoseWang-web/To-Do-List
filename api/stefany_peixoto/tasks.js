@@ -5,29 +5,85 @@ const router = express.Router();
 
 /** @type{{id: number, name: string, done: boolean}[]} */
 const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
+    { id: 1, name: "Math test", done: false },
+    { id: 2, name: "Lab 8a", done: false },
+    { id: 3, name: "Java readings", done: false },
+    { id: 4, name: "CSS", done: false },
 ];
-
-// Search
+// GET tasks
 router.get('/', function (req, res) {
     console.log("Handling request to search tasks");
-    // Return all tasks
     res.send(tasks);
 });
-
-router.get('/:id', function (req, res) {
-    console.log("Handling request to find task: ", req.params.id);
+//PUT tasks id:
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
     const id = parseInt(req.params.id);
-    const result = tasks.filter((task) => task.id === id);
-
-    if (result.length === 0) {
+    const index = tasks.findIndex((task) => task.id === id);
+    if (index === -1) {
         res.status(404).send({ message: "Not found" });
+        return;
     }
+    const { done } = req.body;
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    tasks[index].done = done;
+    res.send(tasks[index]);
+});
+// GET by id
+router.get('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
+    const id = parseInt(req.params.id);
+    const filteredTasks = tasks.find((task) => task.id === id);
+    if (filteredTasks.length === 0) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // Return all tasks
 
-    return res.send(result[0]);
+    res.send(filteredTasks);
+});
+//Delete
+router.delete('/:id', function (req, res) {
+    console.log("Handling request to search tasks");
+    const id = parseInt(req.params.id);
+    const filteredTasks = tasks.findIndex((task) => task.id === id);
+    if (filteredTasks.length === -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+    // Remove task
+    tasks.splice(filteredTasks, 1)
+    res.status(204).send();
+});
+// POST
+router.post('/', function (req, res) {
+    console.log("Handling request to create a task");
+
+    const { name, done } = req.body;
+
+    // Input validation
+    if (!name || typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    const date = new Date();
+    const number = date.getTime();
+    const id = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 5;
+    // Create a new task object
+    const newTask = {
+
+        id: id, // Generate a unique ID based on the length of the tasks array
+        name: name,
+        done: done
+    };
+
+    // Add the new task to the tasks array
+    tasks.push(newTask);
+
+    res.status(201).send(newTask);
 });
 
 module.exports = router;

@@ -1,32 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>To Do App</title>
-    </head>
 
-    <body>
-        <a href="/">Back</a>
-        <h1>To-Do App</h1>
-        <form id="taskForm">
-            <label for="nameInput">Name</label>
-            <input id="nameInput" type="text" name="name" />
-            <button id="addButton">Add</button>
-            <button id="clearButton" type="button">Clear</button>
-        </form>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To Do App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
 
-        <table id="taskTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Done</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="taskTableBody"></tbody>
-        </table>
-    </body>
+  <body class="bg-blue-200 flex justify-center items-center h-screen">
+    <div class="bg-white rounded-lg shadow-lg p-10">
+
+      <a class="text-gray-400" href="/">Back</a>
+      <h1 class="block text-sm font-medium leading-6 text-gray-900">To-Do App</h1>
+      <form class="flex justify-center" id="taskForm">
+
+        <label>Name</label>
+        <input class="block text-sm font-semibold leading-6 text-gray-900" id="nameInput" type="text" name="name" />
+        <button
+          class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Add</button>
+        <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" x-show="hasDone" id="clearButton"
+          type="button" @click="clearDoneTasks">Clear
+          done</button>
+      </form>
+
+      <table class="mt-4 mx-auto text-center" id="taskTable">
+        <thead class="border-b font-medium dark:border-neutral-500">
+          <tr>
+            <th scope="col" class="px-6 py-4">ID</th>
+            <th scope="col" class="px-6 py-4">Name</th>
+            <th scope="col" class="px-6 py-4">Done</th>
+            <th scope="col" class="px-6 py-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="taskTableBody"></tbody>
+      </table>
+
+      <script>
+        async function fetchAllTasks() {
+          const response = await fetch("/api/piero/tasks");
+          const tasks = await response.json();
+          console.log("Number of tasks found: ", tasks.length);
+          return tasks;
+        }
+
+        function renderRow(tableBodyElement, task) {
+          console.log("Task: ", task);
+          const row = document.createElement("tr");
+          tableBodyElement.append(row);
+          // Create the ID column
+          const idCol = document.createElement("td");
+          idCol.append(task.id);
+          row.append(idCol);
+          // Create the Name column
+          const nameCol = document.createElement("td");
+          nameCol.append(task.name);
+          row.append(nameCol);
+          // Create the Done column
+          const doneCol = document.createElement("td");
+          const checkbox = document.createElement("input");
+          checkbox.setAttribute("type", "checkbox");
+          if (task.done) {
+            checkbox.setAttribute("checked", "");
+          }
+          doneCol.append(checkbox);
+          row.append(doneCol);
+          // Create the actions
+          const actionCol = document.createElement("td");
+          const removeButton = document.createElement("button");
+          removeButton.append("remove");
+          actionCol.append(removeButton);
+          removeButton.addEventListener("click", async function () {
+            const choice = window.confirm(`Are you sure you want to delete:\n${task.name}`);
+            if (!choice) {
+              return;
+            }
+            // Go ahead and delete it.
+            console.log("Delete task id: ", task.id);
+            await fetch(`/api/piero/tasks/${task.id}`, {
+              method: 'DELETE'
+            });
+            // delete the row
+            const row = document.getElementById(`task-row-${task.id}`);
+            if (row) {
+              row.remove();
+            }
+          });
+          row.append(actionCol);
+        }
+
+        async function renderTable() {
+          const tasks = await fetchAllTasks();
+          const tableBody = document.getElementById("taskTableBody");
+          for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            // render the row
+            renderRow(tableBody, task);
+          }
+        }
+
+        renderTable()
+
+        function createTask(task) {
+          fetch("/api/piero/tasks", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+          })
+            .then(function (response) {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error('Error creating task');
+              }
+            })
+            .then(function (data) {
+              renderRow(data);
+              document.getElementById("nameInput").value = "";
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+        }
+
+        function handleFormSubmit(event) {
+          event.preventDefault();
+
+          const nameInput = document.getElementById("nameInput");
+          const taskName = nameInput.value.trim();
+
+          if (taskName !== "") {
+            const newTask = {
+              id: generateUniqueId(), // Implement your own unique ID generation logic
+              name: taskName,
+              done: false
+            };
+
+            createTask(newTask);
+          }
+        }
+
+        function generateUniqueId() {
+          // Implement your own unique ID generation logic
+          // You can use libraries like uuid or generate a timestamp-based ID
+          // For simplicity, let's use a timestamp-based ID here
+          return Date.now().toString();
+        }
+
+        taskForm.addEventListener("submit", handleFormSubmit);
+
+        fetchTasks() 
+      </script>
+
+  </body>
 
 </html>
