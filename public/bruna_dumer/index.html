@@ -11,16 +11,17 @@
 
   <body class="bg-orange-300 flex justify-center items-center h-screen">
     <div class="bg-white rounded-lg shadow-lg p-10">
-
       <a class="text-gray-400" href="/">Back</a>
       <h1 class="text-teal-700 text-5xl text-center uppercase font-bold m-5">To Do App</h1>
-      <form class="flex justify-center" id="taskForm">
-        <input class="bg-teal-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"
-          placeholder="Enter your task">
-        <button class="bg-teal-500 px-5 rounded-e-full" type="submit">+</button>
-        <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" id="clearButton"
-          type="button">Clear All Tasks</button>
-      </form>
+      <div>
+        <form class="flex justify-center" id="taskForm">
+          <input class="bg-teal-100 px-3 py-2 rounded-s-full " id="nameInput" type="text" name="nameInput"
+            placeholder="Enter your task">
+          <button class="bg-teal-500 px-5 rounded-e-full" type="submit">+</button>
+          <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500 hidden md:block"
+            id="clearButton" type="button">Clear All Tasks</button>
+        </form>
+      </div>
 
       <table class="mt-4 mx-auto text-center" id="taskTable">
         <tbody id="taskTableBody">
@@ -32,7 +33,10 @@
           </tr>
         </tbody>
       </table>
-
+      <div class="flex flex-col items-center justify-center">
+        <button class="bg-red-600 text-white text-xl m-5 p-2 rounded-full hover:bg-red-500 md:hidden"
+          id="clearButtonMobile" type="button">Clear All Tasks</button>
+      </div>
       <script>
         console.log("Hello World!");
         async function fetchAllTasks() {
@@ -123,7 +127,6 @@
           });
 
           row.append(actionsCol);
-
         }
 
         renderTable();
@@ -137,7 +140,6 @@
             //render the row
             renderRow(tableBody, task);
           }
-
         }
 
         //Add event listeners
@@ -146,6 +148,10 @@
 
         const clearButton = document.getElementById("clearButton");
         clearButton.addEventListener("click", clearAllTasks);
+
+        const clearButtonMobile = document.getElementById("clearButtonMobile");
+        clearButtonMobile.addEventListener("click", clearAllTasks);
+
 
         //Clear all tasks
         async function clearAllTasks() {
@@ -158,10 +164,18 @@
           });
           const tableBody = document.getElementById("taskTableBody");
           tableBody.innerHTML = "";
+
+          const clearButton = document.getElementById("clearButton");
+          clearButton.style.display = "none"; // Hide the main delete button
+
+          const clearButtonMobile = document.getElementById("clearButtonMobile");
+          clearButtonMobile.style.display = "none"; // Hide the mobile delete button
         }
 
+
         //Post a task
-        async function postTask() {
+        async function postTask(event) {
+          event.preventDefault();
           const nameInput = document.getElementById("nameInput");
           const name = nameInput.value;
 
@@ -176,11 +190,12 @@
           });
 
           const task = await response.json();
-          renderRow(tableBody, task);
+          renderRow(taskTableBody, task);
+          nameInput.value = "";
         }
 
         // Update a task
-        async function updateTask(task) {
+        async function updateTask(task, row) {
           try {
             const response = await fetch(`/api/bruna_dumer/tasks/${task.id}`, {
               method: "PUT",
@@ -190,50 +205,21 @@
               body: JSON.stringify(task)
             });
 
-            if (response.ok) {
-              const updatedTask = await response.json();
-              console.log(updatedTask);
-              const row = document.getElementById(`row-${updatedTask.id}`);
-              if (row) {
-                if (updatedTask.done) {
-                  row.classList.add("bg-gray-200", "line-through");
-                } else {
-                  row.classList.remove("bg-gray-200", "line-through");
-                }
-              }
-            } else {
-              console.error("Error updating task:", response.statusText);
+            if (!response.ok) {
+              throw new Error("Error updating task");
             }
           } catch (error) {
-            console.error("Error updating task:", error);
+            console.log(error);
+            row.classList.add("bg-red-500");
+            row.addEventListener("animationend", function () {
+              row.classList.remove("bg-red-500");
+            });
           }
         }
-
-        // Add event listener to the table
-        const taskTable = document.getElementById("taskTable");
-        taskTable.addEventListener("change", async function (event) {
-          const checkbox = event.target;
-          if (checkbox.type === 'checkbox') {
-            const row = checkbox.parentElement.parentElement;
-            const id = row.children[0].innerText;
-            const name = row.children[1].innerText;
-            const task = {
-              id: parseInt(id), // Convert the ID to a number
-              name: name,
-              done: checkbox.checked
-            };
-            await updateTask(task);
-
-            // Apply appropriate CSS classes based on task's "done" status
-            row.classList.toggle("bg-gray-200", checkbox.checked);
-            row.children[1].classList.toggle("line-through", checkbox.checked);
-          }
-        });
-
-
-
-
       </script>
+
+    </div>
+
   </body>
 
 </html>
