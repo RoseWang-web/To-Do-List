@@ -37,32 +37,32 @@ router.delete('/:id', function (req, res) {
     const result = tasks.findIndex(function (task) {
         return task.id == req.params.id;
     })
-    if (result=== -1) {
+    if (result === -1) {
         res.status(404).send({ message: "Not found" });
         return;
     }
     // remove the tasks
-    tasks.splice(result,1);
+    tasks.splice(result, 1);
     res.status(204).send();
 });
 
-router.post('/', function(req, res) {
-  const { name, done } = req.body;
+router.post('/', function (req, res) {
+    const { name, done } = req.body;
 
-  if (!name) {
-    res.status(400).send({ message: 'Task name is required.' });
-    return;
-  }
+    if (!name) {
+        res.status(400).send({ message: 'Task name is required.' });
+        return;
+    }
 
-  const newTask = {
-    id: tasks.length + 1,
-    name: name,
-    done: done || false
-  };
+    const newTask = {
+        id: tasks.length + 1,
+        name: name,
+        done: done || false
+    };
 
-  tasks.push(newTask);
+    tasks.push(newTask);
 
-  res.status(201).send(newTask);
+    res.status(201).send(newTask);
 });
 
 
