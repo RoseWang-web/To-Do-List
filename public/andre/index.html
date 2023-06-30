@@ -13,8 +13,10 @@
 
             <div class="flex flex-row justify-center bg-slate-100 p-2 ">
                 <a href="/">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
                     </svg>
                 </a>
                 <h1 class="text-center text-cyan-800 text-base font-bold">To-Do App</h1>
@@ -22,15 +24,20 @@
 
             <div class="p-1 m-2 justify-center bg-slate-100 ">
                 <form id="taskForm">
-                    <input id="nameInput" type="text" name="name" placeholder="Enter your Task Name here" autofocus style="width:80%  "/>
+                    <input id="nameInput" type="text" name="name" placeholder="Enter your Task Name here" autofocus
+                        class="w-32 md:w-96" />
                     <button id="addButton">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
                     <button id="clearButton" type="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                         </svg>
                     </button>
                 </form>
@@ -38,7 +45,7 @@
 
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div class="inline-block min-w-full py-2 sm:px-4 lg:px-8">
+                    <div class="inline-block min-w-full py-2 sm:px-4 lg:px-8">
                         <div>
                             <table class="min-w-full text-left text-sm font-light">
                                 <thead
@@ -59,7 +66,7 @@
             </div>
 
         </div>
-        
+
         <script>
             console.log("Hello World");
             async function fetchAllTasks() {
@@ -124,28 +131,28 @@
                     }
                     // Go ahead and delete it.
                     console.log("Delete task id: ", task.id);
-                    deleteTask(task.id,row);
-                    
+                    deleteTask(task.id, row);
+
                 });
                 row.append(actionCol);
             }
 
             async function deleteTask(taskId, row) {
-            try {
-                const response = await fetch(`/api/andre/tasks/${taskId}`, {
-                    method: 'DELETE'
-                });
-                if (response.status === 204) {
-                    console.log("Task deleted successfully");
-                    row.remove();
-                } else {
-                    console.log("Failed to delete task");
+                try {
+                    const response = await fetch(`/api/andre/tasks/${taskId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.status === 204) {
+                        console.log("Task deleted successfully");
+                        row.remove();
+                    } else {
+                        console.log("Failed to delete task");
+                    }
+                } catch (error) {
+                    console.error("An error occurred:", error);
                 }
-            } catch (error) {
-                console.error("An error occurred:", error);
             }
-        }
-            
+
             async function renderTable() {
                 const tasks = await fetchAllTasks();
                 const tableBody = document.getElementById("taskTableBody");
@@ -159,7 +166,7 @@
             //Add task
             const clearButton = document.getElementById("clearButton");
             clearButton.addEventListener("click", clearAllTasks);
-            
+
             const addButton = document.getElementById("addButton");
             addButton.addEventListener("click", async function (event) {
                 event.preventDefault();
@@ -192,15 +199,15 @@
                     console.error("An error occurred:", error);
                 }
             });
-            
+
             async function clearAllTasks() {
                 const confirmed = window.confirm("Are you sure you want to delete all tasks?");
-                    if (!confirmed) {
-                        return;
-                    }
-                    await fetch("/api/andre/tasks", {
-                        method: "DELETE"
-                    });
+                if (!confirmed) {
+                    return;
+                }
+                await fetch("/api/andre/tasks", {
+                    method: "DELETE"
+                });
                 const tableBody = document.getElementById("taskTableBody");
                 tableBody.innerHTML = "";
             }
