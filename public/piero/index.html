@@ -20,8 +20,7 @@
         <button
           class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Add</button>
         <button class="bg-red-600 text-white text-xs m-2 p-2 rounded hover:bg-red-500" x-show="hasDone" id="clearButton"
-          type="button" @click="clearDoneTasks">Clear
-          done</button>
+          type="button" @click="clearDoneTasks">Clear</button>
       </form>
 
       <table class="mt-4 mx-auto text-center" id="taskTable">
@@ -48,14 +47,17 @@
           console.log("Task: ", task);
           const row = document.createElement("tr");
           tableBodyElement.append(row);
+
           // Create the ID column
           const idCol = document.createElement("td");
           idCol.append(task.id);
           row.append(idCol);
+
           // Create the Name column
           const nameCol = document.createElement("td");
           nameCol.append(task.name);
           row.append(nameCol);
+
           // Create the Done column
           const doneCol = document.createElement("td");
           const checkbox = document.createElement("input");
@@ -151,7 +153,6 @@
 
         taskForm.addEventListener("submit", handleFormSubmit);
 
-        fetchTasks() 
       </script>
 
   </body>
