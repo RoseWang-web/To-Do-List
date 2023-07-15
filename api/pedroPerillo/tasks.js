@@ -1,37 +1,64 @@
-// tasks.js
-
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const mysqlQuery = require('./db');
 
-/** @type{{id: number, name: string, done: boolean}[]} */
-let tasks = [];
-
-function saveTasksToFile() {
-    fs.writeFileSync('tasks.json', JSON.stringify(tasks));
-}
-
-function loadTasksFromFile() {
-    if (!fs.existsSync('tasks.json')) {
-        return;
+async function findTask(id) {
+    const sql = `
+    SELECT * from tasks where id = ${id};
+`;
+    /** @type{{id: number, name: string, done: boolean}[]} */
+    const result = await mysqlQuery(sql);
+    if (!result.length) {
+        return null;
     }
-    const json = fs.readFileSync('tasks.json');
-    tasks = JSON.parse(json);
+
+    return result[0];
 }
 
-loadTasksFromFile();
+async function findTasks() {
+    const sql = `
+    SELECT * FROM tasks
+`;
 
-// GET /tasks
-router.get('/', function (req, res) {
-    console.log("Handling request to search tasks");
-    res.send(tasks);
+    return await mysqlQuery(sql);
+}
+
+async function createTask(task) {
+    const sql = `
+    INSERT INTO tasks (name, done) VALUES ('${task.name}', ${task.done});
+    SELECT last_insert_id();
+`;
+    const result = await mysqlQuery(sql);
+    const generatedId = result[1][0]['last_insert_id()'];
+    return await findTask(generatedId);
+}
+
+async function updateTask(task) {
+    const sql = `
+    UPDATE tasks SET name = '${task.name}', done = ${task.done} WHERE id = ${task.id}
+`;
+
+    return await mysqlQuery(sql);
+}
+
+async function deleteTask(id) {
+    const sql = `
+    DELETE FROM tasks WHERE id = ${id}
+`;
+
+    return await mysqlQuery(sql);
+}
+
+router.get('/', async function (req, res) {
+    /** @type{{id: number, name: string, done: boolean}[]} */
+    const result = await findTasks();
+    res.send(result);
 });
 
-// Update a task
-router.put('/:id', function (req, res) {
-    console.log("Handling request to update a task");
-    const id = parseInt(req.params.id);
-    const task = tasks.find((tasks) => tasks.id === id);
+router.put('/:id', async function (req, res) {
+    /** @type{{id: number, name: string, done: boolean}} */
+    const task = await findTask(req.params.id);
     if (!task) {
         res.status(404).send({ message: "Not found" });
         return;
@@ -49,54 +76,64 @@ router.put('/:id', function (req, res) {
 
     task.done = done;
     task.name = name;
-    saveTasksToFile(tasks);
+    await updateTask(task);
     res.send(task);
 });
 
 // Find a task
-router.get('/:id', function (req, res) {
-    console.log("Handling request to search tasks");
-    const id = parseInt(req.params.id);
-    const result = tasks.find((tasks) => tasks.id === id);
-    if (!result) {
+router.get('/:id', async function (req, res) {
+    /** @type{{id: number, name: string, done: boolean}} */
+    const task = await findTask(req.params.id);
+    if (!task) {
         res.status(404).send({ message: "Not found" });
         return;
     }
-    res.send(result[0]);
+    res.send(task);
 });
 
 // Create task
-router.post('/', function (req, res) {
-    console.log("Creating task");
-    const task = req.body;
-    if (!task.name) {
+router.post('/', async function (req, res) {
+    const request = req.body;
+    if (!request.name) {
         res.status(400).send({ message: "Task must have a name" });
         return;
     }
 
-    // Add the task
-    const newTask = {
-        id: new Date().getTime(),
-        name: task.name,
+    /** @type{{id: number, name: string, done: boolean}} */
+    const task = await createTask({
+        name: request.name,
         done: false,
-    };
-    tasks.push(newTask);
-    saveTasksToFile(tasks);
-    res.status(201).send(newTask);
+    })
+    res.status(201).send(task);
 });
 
-// Delete task
-router.delete('/:id', function (req, res) {
-    console.log("Handling request to delete a task");
-    const id = parseInt(req.params.id);
-    const index = tasks.findIndex((tasks) => tasks.id === id);
-    if (index === -1) {
-        res.status(404).send({ message: "Task not found" });
+router.delete('/:id', async function (req, res) {
+    /** @type{{id: number, name: string, done: boolean}} */
+    const task = await findTask(req.params.id);
+    if (!task) {
+        res.status(404).send({ message: "Not found" });
         return;
     }
-    tasks.splice(index, 1);
-    saveTasksToFile(tasks);
+
+    await deleteTask(task.id);
     res.status(204).send();
 });
+
+// Create tasks table if needed
+(async function () {
+    try {
+        const sql = `
+    CREATE TABLE IF NOT EXISTS tasks(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255),
+        done BOOLEAN
+    );
+`;
+        await mysqlQuery(sql);
+    } catch (error) {
+        console.log("Database not up")
+    }
+})();
+
 
 module.exports = router;

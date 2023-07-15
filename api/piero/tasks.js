@@ -1,17 +1,26 @@
-// Based one:
-// https://expressjs.com/en/guide/routing.html
+// tasks.js
+
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const mysqlQuery = require('./db');
 
 /** @type{{id: number, name: string, done: boolean}[]} */
-const tasks = [
-    { id: 1, name: "some name 1", done: false },
-    { id: 2, name: "some name 2", done: false },
-    { id: 3, name: "some name 3", done: false },
-    { id: 4, name: "some name 4", done: false },
-];
+let tasks = [];
+
+function saveTasksToFile() {
+    fs.writeFileSync('tasks.json', JSON.stringify(tasks));
+}
+
+function loadTasksFromFile() {
+    if (!fs.existsSync('tasks.json')) {
+        return;
+    }
+    const json = fs.readFileSync('tasks.json');
+    tasks = JSON.parse(json);
+}
+
+loadTasksFromFile();
 
 function saveTasksToFile() {
     fs.writeFileSync('tasks.json', JSON.stringify(tasks));
@@ -108,4 +117,24 @@ router.delete('/:id', function (req, res) {
     res.status(204).send();
 });
 
+<<<<<<< HEAD
 module.exports = router;
+=======
+// Create tasks table if needed
+(async function () {
+    try {
+        const sql = `
+    CREATE TABLE IF NOT EXISTS tasks(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255),
+        done BOOLEAN
+    );
+`;
+        await mysqlQuery(sql);
+    } catch (error) {
+        console.log("Database not up")
+    }
+})();
+
+module.exports = router;
+>>>>>>> c8d38012bb588121bc50bd9602ea1027edcb8d29
