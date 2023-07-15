@@ -13,80 +13,99 @@ const tasks = [
     { id: 4, name: "some name 4", done: false },
 ];
 
+function saveTasksToFile() {
+    fs.writeFileSync('tasks.json', JSON.stringify(tasks));
+}
+
+function loadTasksFromFile() {
+    if (!fs.existsSync('tasks.json')) {
+        return;
+    }
+    const json = fs.readFileSync('tasks.json');
+    tasks = JSON.parse(json);
+}
+
+loadTasksFromFile();
+
 // GET /tasks
 router.get('/', function (req, res) {
     console.log("Handling request to search tasks");
-    // Return all tasks
     res.send(tasks);
+});
+
+//Update a task based on its ID
+router.put('/:id', function (req, res) {
+    console.log("Handling request to update a task");
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((tasks) => tasks.id === id);
+    if (index === -1) {
+        res.status(404).send({ message: "Not found" });
+        return;
+    }
+
+    const task = req.body;
+    const { name, done } = task;
+    console.log('in', task);
+    if (!name || !name.trim()) {
+        res.status(400).send({ message: "Task must have a name" });
+        return;
+    }
+    if (typeof done !== "boolean") {
+        res.status(400).send({ message: "Invalid task data" });
+        return;
+    }
+    tasks[index].done = done;
+    console.log('out', tasks[index]);
+    saveTasksToFile(tasks);
+    res.send(tasks[index]);
 });
 
 // GET /tasks/:id
 router.get('/:id', function (req, res) {
     console.log("Handling request to search tasks");
     const id = parseInt(req.params.id);
-    const result = tasks.filter((tasks) => tasks.id === id);
-    if (result.length === 0) {
-        res.status(404).send({ message: "Task not found" });
+    const result = tasks.find((tasks) => tasks.id === id);
+    if (!result) {
+        res.status(404).send({ message: "Not found" });
         return;
     }
-    // Return the task
-    res.send(filteredTasks[0]);
+    res.send(result[0]);
+});
+
+//Understand the purpose of this endpoint
+
+// POST /tasks
+router.post('/', function (req, res) {
+    console.log("Creating task");
+    const task = req.body;
+    if (!task.name) {
+        res.status(400).send({ message: "Task must have a name" });
+        return;
+    }
+
+    // Add the task
+    const newTask = {
+        id: new Date().getTime(),
+        name: task.name,
+        done: false,
+    };
+    tasks.push(newTask);
+    saveTasksToFile(tasks);
+    res.status(201).send(newTask);
 });
 
 // DELETE /tasks/:id
 router.delete('/:id', function (req, res) {
-
     console.log("Handling request to delete a task");
     const id = parseInt(req.params.id);
-    const index = tasks.findIndex((task) => task.id === id);
+    const index = tasks.findIndex((tasks) => tasks.id === id);
     if (index === -1) {
         res.status(404).send({ message: "Task not found" });
         return;
     }
-    // Remove the task from the tasks array
     tasks.splice(index, 1);
+    saveTasksToFile(tasks);
     res.status(204).send();
-});
-
-router.post('/', function (req, res) {
-    console.log("Handling request to create a task");
-
-    const { name, done } = req.body;
-
-    // Input validation
-    if (!name || typeof done !== "boolean") {
-        res.status(400).send({ message: "Invalid task data" });
-        return;
-    }
-
-    // Create a new task object
-    const newTask = {
-        id: tasks.length + 1, // Generate a unique ID based on the length of the tasks array
-        name: name,
-        done: done
-    };
-
-    // Add the new task to the tasks array
-    tasks.push(newTask);
-
-    res.status(201).send(newTask);
-});
-
-router.put('/:id', function (req, res) {
-    console.log("Handling request to update a task");
-    const id = parseInt(req.params.id);
-    const index = tasks.findIndex((task) => task.id === id);
-    if (index === -1) {
-        res.status(404).send({ message: "Not found" });
-        return;
-    }
-    const { done } = req.body;
-    if (typeof done !== "boolean") {
-        res.status(400).send({ message: "Invalid task data" });
-        return;
-    }
-    tasks[index].done = done;
-    res.send(tasks[index]);
 });
 
 module.exports = router;
