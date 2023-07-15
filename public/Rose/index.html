@@ -84,12 +84,31 @@
                     const checkbox = document.createElement("input");
                     checkbox.setAttribute("type", "checkbox");
                     checkbox.checked = task.done;
+
+                    // Add an event listener to the checkbox
+                    checkbox.addEventListener("change", async function () {
+                        // Update the task's done status immediately
+                        task.done = checkbox.checked;
+
+                        if (checkbox.checked) {
+                            row.classList.add("line-through");
+                        } else {
+                            row.classList.remove("line-through");
+                        }
+                        // Send a PUT request to update the task on the server
+                        await fetch(`/api/rose/tasks/${task.id}`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(task),
+                        });
+                    });
                     if (checkbox.checked) {
                         row.classList.add("line-through");
                     } else {
-                        doneCol.classList.remove("bg-green-500");
+                        row.classList.remove("line-through");
                     }
-
                     doneCol.append(checkbox);
                     row.append(doneCol);
 
